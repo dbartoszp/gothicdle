@@ -1,9 +1,11 @@
+import { Card } from "../ui/Card/Card";
 import { Text } from "../ui/Text/Text";
 
 export const TitleCard = () => {
   return (
-    <div className="text-3xl">
+    <Card>
       <Text variant="title">Gothicdle</Text>
-    </div>
+      <Text variant="danger">Tu jakies instrukcje beda</Text>
+    </Card>
   );
 };
