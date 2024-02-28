@@ -1,9 +1,9 @@
-import Image from "next/image";
+import { TitleCard } from "@/modules/TitleCard/TitleCard";
 
 export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <h1>Gothicdle</h1>
+      <TitleCard />
     </main>
   );
 }

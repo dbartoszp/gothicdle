@@ -1,8 +1,11 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
+import type { Metadata } from "next";
+import localFont from "@next/font/local";
 
-const inter = Inter({ subsets: ["latin"] });
+const gothicFont = localFont({
+  src: [{ path: "../public/fonts/Gothic2Ingame.ttf", weight: "400" }],
+  variable: "--font-gothic",
+});
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -16,7 +19,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={`${gothicFont.variable} font-sans`}>{children}</body>
     </html>
   );
 }

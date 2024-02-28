@@ -6,6 +6,8 @@
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
+  --default-text: #fdf7e6;
+  --default-border: #887952;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -17,13 +19,8 @@
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  color: #fdf7e6;
+  background: #182d39;
 }
 
 @layer utilities {
