@@ -1,33 +1,30 @@
+import { arraysHaveCommonItems } from '@/modules/characters/utils/arraysHaveCommonItems';
+import { arraysHaveSameItems } from '@/modules/characters/utils/arraysHaveSameItems';
 import { Text } from '@/modules/ui/Text/Text';
 import clsx from 'clsx';
 
 type GuessBoxProps = {
   label: string;
-  correctData: string | string[] | null | (string | null)[];
-  inputData: string | string[] | null | (string | null)[];
+  correctData: string | string[];
+  inputData: string | string[];
 };
 
 export const GuessBox = ({ label, correctData, inputData }: GuessBoxProps) => {
-  const isArrayCorrectData = Array.isArray(correctData);
-  const inputDataArray = Array.isArray(inputData)
-    ? inputData
-    : inputData?.split(',');
-  const correctDataArray = Array.isArray(correctData)
-    ? correctData
-    : correctData?.split(',');
+  const areArrays = Array.isArray(correctData) && Array.isArray(inputData);
+
+  const isInputDataCorrect =
+    (!areArrays && inputData === correctData) ||
+    (areArrays && arraysHaveSameItems(inputData, correctData));
+
+  const haveCommonElements =
+    areArrays && arraysHaveCommonItems(inputData, correctData);
+
   const boxClasses = clsx(
     'aspect-square w-24 h-24 border border-default-border flex items-center justify-center',
     {
-      'bg-green-700': isArrayCorrectData
-        ? inputDataArray?.every((item) => correctDataArray?.includes(item))
-        : correctData === inputData,
-      'bg-red-700': isArrayCorrectData
-        ? inputDataArray?.every((item) => !correctDataArray?.includes(item))
-        : correctData !== inputData,
-      'bg-orange-700':
-        isArrayCorrectData &&
-        correctDataArray?.some((item) => inputDataArray?.includes(item)) &&
-        !correctDataArray?.every((item) => inputDataArray?.includes(item)),
+      'bg-green-700': isInputDataCorrect,
+      'bg-orange-700': haveCommonElements && !isInputDataCorrect,
+      'bg-red-700': !isInputDataCorrect && !haveCommonElements,
     }
   );
 
@@ -35,10 +32,50 @@ export const GuessBox = ({ label, correctData, inputData }: GuessBoxProps) => {
     <div className='flex flex-col items-center justify-center space-y-2'>
       <Text>{label}</Text>
       <div className={boxClasses}>
-        <Text>{correctData}</Text>
+        <Text>{inputData}</Text>
       </div>
-      <Text variant='green'>{inputDataArray}</Text>
-      <Text variant='danger'>{correctData}</Text>
     </div>
   );
 };
+
+// import { Text } from '@/modules/ui/Text/Text';
+// import clsx from 'clsx';
+
+// type GuessBoxProps = {
+//   label: string;
+//   correctData: string | null;
+//   inputData: string | null;
+// };
+
+// export const GuessBox = ({ label, correctData, inputData }: GuessBoxProps) => {
+//   const haveCommonElements =
+//     correctData !== null && inputData !== null && correctData !== inputData;
+
+//   const noCommonElements =
+//     correctData !== null &&
+//     inputData !== null &&
+//     correctData !== inputData &&
+//     correctData.split('').every((char) => !inputData.includes(char)) &&
+//     inputData.split('').every((char) => !correctData.includes(char));
+
+//   const boxClasses = clsx(
+//     'aspect-square w-24 h-24 border border-default-border flex items-center justify-center',
+//     {
+//       'bg-green-700': inputData === correctData,
+//       'bg-orange-700': haveCommonElements,
+//       'bg-red-700': noCommonElements,
+//     }
+//   );
+
+//   return (
+//     <div className='flex flex-col items-center justify-center space-y-2'>
+//       <Text>{label}</Text>
+//       <div className={boxClasses}>
+//         <Text>{inputData}</Text>
+//       </div>
+//       <Text variant='green'>{inputData}</Text>
+//       <Text variant='danger'>{correctData}</Text>
+//       <Text>test</Text>
+//     </div>
+//   );
+// };
