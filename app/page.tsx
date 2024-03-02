@@ -1,7 +1,7 @@
 import { Footer } from '@/modules/Footer/Footer';
 import { Instructions } from '@/modules/MainGameCard/Instructions/Instructions';
 import { MainGameCard } from '@/modules/MainGameCard/MainGameCard';
-import { TitleHeader } from '@/modules/MainGameCard/TitleHeader/TitleHeader';
+import { TitleHeader } from '@/modules/TitleHeader/TitleHeader';
 import { TitleCard } from '@/modules/TitleCard/TitleCard';
 import { Text } from '@/modules/ui/Text/Text';
 

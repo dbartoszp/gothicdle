@@ -8,7 +8,6 @@ import { Text } from '../ui/Text/Text';
 import { GuessResults } from './GuessResults/GuessResults';
 import { Searchbar } from './Searchbar/Searchbar';
 import { SearchResult } from './SearchResult/SearchResult';
-import { Instructions } from './Instructions/Instructions';
 
 const TEST_INPUT_CHAR_ID = 1;
 const TEST_CORRECT_CHAR_ID = 1;
@@ -55,12 +54,8 @@ export const MainGameCard = () => {
         </div>
       ) : (
         <div className='relative justify-center'>
-          <Searchbar
-            onChange={handleInputChange}
-            onSubmit={() => console.log(testGetCharactersByName.data)}
-            value={searchInput}
-          />
-          <div className='absolute max-h-36 w-full overflow-y-scroll border border-default-border'>
+          <Searchbar onChange={handleInputChange} value={searchInput} />
+          <div className='absolute max-h-36 w-full overflow-y-auto border border-t-0 border-default-border md:max-h-72'>
             {searchInput &&
               charactersAvailableToGuess?.map((character, i) => (
                 <SearchResult
@@ -77,17 +72,20 @@ export const MainGameCard = () => {
           <Text>Wprowadz pierwsza postac do odgadniecia!</Text>
         </div>
       )}
-      {guessesMade &&
-        guessesMade
-          .slice()
-          .reverse()
-          .map((id) => (
-            <GuessResults
-              key={id}
-              character={correctCharacter.data}
-              inputCharacterId={id}
-            />
-          ))}
+      {guessesMade && (
+        <div className='mt-4'>
+          {guessesMade
+            .slice()
+            .reverse()
+            .map((id) => (
+              <GuessResults
+                key={id}
+                character={correctCharacter.data}
+                inputCharacterId={id}
+              />
+            ))}
+        </div>
+      )}
     </Card>
   );
 };

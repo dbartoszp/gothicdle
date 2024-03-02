@@ -1,26 +1,12 @@
-import { Button } from '@/modules/ui/Button/Button';
-import { Text } from '@/modules/ui/Text/Text';
 import React, { ChangeEvent, MouseEvent } from 'react';
-
-type Character = {
-  imie: string;
-  bron: string[];
-  zbroja: string[];
-  przynaleznosc: string[];
-  wystepowanie: string[];
-  zdjecie: string;
-};
 
 type SearchbarProps = {
   onChange: (event: ChangeEvent<HTMLInputElement>) => void;
-  onSubmit: (e: MouseEvent<HTMLButtonElement>) => void;
-  //   searchResults: Character[];
   value: string;
 };
 
 export const Searchbar: React.FC<SearchbarProps> = ({
   onChange,
-  onSubmit,
   value = '',
 }) => {
   return (
@@ -29,7 +15,7 @@ export const Searchbar: React.FC<SearchbarProps> = ({
       onChange={onChange}
       placeholder='Wyszukaj imie postaci'
       value={value}
-      className='border border-default-border bg-neutral-950 px-3 py-2 opacity-80'
+      className='border border-default-border bg-neutral-950 px-3 py-2 opacity-95 md:min-w-96'
       autoComplete='off'
     />
   );
