@@ -15,6 +15,7 @@ const TEST_CORRECT_CHAR_ID = 1;
 export const MainGameCard = () => {
   const correctCharacter = useGetCharacterById(TEST_CORRECT_CHAR_ID);
 
+  const [isGuessed, setIsGuessed] = useState(false);
   const [searchInput, setSearchInput] = useState('');
   const [guessesMade, setGuessesMade] = useState<number[]>([]);
 
@@ -29,6 +30,7 @@ export const MainGameCard = () => {
     const newGuesses = [...guessesMade, guessId];
     setGuessesMade(newGuesses);
     setSearchInput('');
+    if (guessId === TEST_CORRECT_CHAR_ID) setIsGuessed(true);
   };
 
   const charactersAvailableToGuess = testGetCharactersByName?.data?.filter(
@@ -42,24 +44,35 @@ export const MainGameCard = () => {
 
   return (
     <Card>
-      <div className='relative justify-center'>
-        <Searchbar
-          onChange={handleInputChange}
-          onSubmit={() => console.log(testGetCharactersByName.data)}
-          value={searchInput}
-          // searchResults={testGetCharactersByName.data}
-        />
-        <div className='absolute w-full'>
-          {searchInput &&
-            charactersAvailableToGuess?.map((character, i) => (
-              <SearchResult
-                onClick={() => handleMakeNewGuess(character.id)}
-                characterName={character.imie}
-                key={character.imie}
-              />
-            ))}
+      {isGuessed ? (
+        <Text>
+          Gratulacje! Dzisiejsza postac to{' '}
+          <span className='text-green-500'>{correctCharacter.data.imie}</span>
+        </Text>
+      ) : (
+        <div className='relative justify-center'>
+          <Searchbar
+            onChange={handleInputChange}
+            onSubmit={() => console.log(testGetCharactersByName.data)}
+            value={searchInput}
+          />
+          <div className='absolute w-full'>
+            {searchInput &&
+              charactersAvailableToGuess?.map((character, i) => (
+                <SearchResult
+                  onClick={() => handleMakeNewGuess(character.id)}
+                  characterName={character.imie}
+                  key={character.imie}
+                />
+              ))}
+          </div>
         </div>
-      </div>
+      )}
+      {!isGuessed && guessesMade.length === 0 && (
+        <div className='my-6 text-sm'>
+          <Text>Wprowadz pierwsza postac do odgadniecia!</Text>
+        </div>
+      )}
       {guessesMade &&
         guessesMade
           .slice()
@@ -71,8 +84,6 @@ export const MainGameCard = () => {
               inputCharacterId={id}
             />
           ))}
-
-      <Text>Dzisiejsza postac to {correctCharacter.data.imie}</Text>
     </Card>
   );
 };

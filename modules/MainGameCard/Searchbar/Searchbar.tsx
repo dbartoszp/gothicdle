@@ -29,7 +29,7 @@ export const Searchbar: React.FC<SearchbarProps> = ({
       onChange={onChange}
       placeholder='Wyszukaj imie postaci'
       value={value}
-      className='border border-default-border bg-neutral-950 px-2 py-1 opacity-80'
+      className='border border-default-border bg-neutral-950 px-3 py-2 opacity-80'
       autoComplete='off'
     />
   );
