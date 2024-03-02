@@ -4,7 +4,7 @@ import { FaLinkedin } from 'react-icons/fa';
 import { Link } from '../ui/Button/Link';
 export const Footer = () => {
   return (
-    <footer className='flex w-full flex-row items-center justify-center space-x-6 border border-x-0 border-b-0 border-t-default-border bg-neutral-950 py-16'>
+    <footer className='mt-12 flex w-full flex-row items-center justify-center space-x-6 border border-x-0 border-b-0 border-t-default-border bg-neutral-950 py-16'>
       <Link href='https://github.com/dbartoszp'>
         <Text>
           <FaGithub size={50} />

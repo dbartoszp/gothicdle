@@ -4,7 +4,7 @@ import localFont from '@next/font/local';
 import { ReactQueryProvider } from './ReactQueryProvider';
 
 const gothicFont = localFont({
-  src: [{ path: '../public/fonts/Gothic2Ingame.ttf', weight: '400' }],
+  src: [{ path: '../public/fonts/Gothic2Nacht.ttf', weight: '300' }],
   variable: '--font-gothic',
 });
 

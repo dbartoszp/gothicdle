@@ -1,11 +1,13 @@
-import { ReactNode } from "react";
+import { ReactNode } from 'react';
 
 type CardProps = {
   children: ReactNode;
-}
+};
 
 export const Card = (props: CardProps) => {
   return (
-    <div className="w-[90%] md:max-w-3xl border border-default-border md:py-10 py-4 px-20 text-center bg-neutral-950 bg-opacity-60 flex-col items-center flex">{props.children}</div>
-  )
-}
+    <div className='flex w-[90%] flex-col items-center border border-default-border bg-neutral-950 bg-opacity-60 px-20 py-4 text-center md:max-w-5xl md:py-10'>
+      {props.children}
+    </div>
+  );
+};

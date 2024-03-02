@@ -19,6 +19,16 @@ module.exports = {
         'default-border': 'var(--default-border)',
         'default-background': 'var(--default-background)',
       },
+      animation: {
+        fade: 'fadeIn .5s ease-in-out',
+      },
+
+      keyframes: {
+        fadeIn: {
+          from: { opacity: 0 },
+          to: { opacity: 1 },
+        },
+      },
     },
   },
   plugins: [],

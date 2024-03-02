@@ -28,6 +28,7 @@ export const MainGameCard = () => {
   const handleMakeNewGuess = (guessId: number) => {
     const newGuesses = [...guessesMade, guessId];
     setGuessesMade(newGuesses);
+    setSearchInput('');
   };
 
   const charactersAvailableToGuess = testGetCharactersByName?.data?.filter(

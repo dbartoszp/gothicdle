@@ -32,26 +32,31 @@ export const GuessResults = ({ character, inputCharacterId }: ResultsProps) => {
         label='Postac'
         correctData={character.imie}
         inputData={inputCharacter.imie}
+        delay={0}
       />
       <GuessBox
         label='Przynaleznosc'
         correctData={character.przynaleznosc}
         inputData={inputCharacter.przynaleznosc}
+        delay={500}
       />
       <GuessBox
         label='Wystepowanie'
         correctData={character.wystepowanie}
         inputData={inputCharacter.wystepowanie}
+        delay={1000}
       />
       <GuessBox
         label='Bron'
         correctData={character.bron}
         inputData={inputCharacter.bron}
+        delay={1500}
       />
       <GuessBox
         label='Zbroja'
         correctData={character.zbroja}
         inputData={inputCharacter.zbroja}
+        delay={2000}
       />
     </div>
   );
