@@ -39,7 +39,7 @@ const sizes: Sizes = {
 };
 
 const variants: ClassNames = {
-  primary: 'bg-dark-blue enabled:hover:bg-light-blue',
+  primary: 'bg-neutral-950 opacity-80 border border-default-border',
   secondary: 'enabled:hover:bg-light-blue-lighter bg-light-blue',
   link: 'bg-transparent enabled:hover:underline',
   green: 'bg-green-700  enabled:hover:bg-green-600  ',

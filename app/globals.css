@@ -8,6 +8,7 @@
   --background-end-rgb: 255, 255, 255;
   --default-text: #fdf7e6;
   --default-border: #887952;
+  --default-background: #182d39;
 }
 
 @media (prefers-color-scheme: dark) {
