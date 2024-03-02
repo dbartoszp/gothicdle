@@ -2,20 +2,21 @@ import { arraysHaveCommonItems } from '@/modules/characters/utils/arraysHaveComm
 import { arraysHaveSameItems } from '@/modules/characters/utils/arraysHaveSameItems';
 import { Text } from '@/modules/ui/Text/Text';
 import clsx from 'clsx';
-import { useEffect, useState } from 'react';
 
 type GuessBoxProps = {
   label: string;
   correctData: string | string[];
   inputData: string | string[];
-  delay: number;
+  // delay: number;
+  variant?: string;
 };
 
 export const GuessBox = ({
   label,
   correctData,
   inputData,
-  delay,
+  // delay,
+  variant,
 }: GuessBoxProps) => {
   const areArrays = Array.isArray(correctData) && Array.isArray(inputData);
 
@@ -28,9 +29,11 @@ export const GuessBox = ({
   const boxClasses = clsx(
     'aspect-square md:w-32 md:h-32 w-24 h-24 border border-default-border flex items-center justify-center',
     {
-      'bg-green-700': isInputDataCorrect,
-      'bg-orange-700': haveCommonElements && !isInputDataCorrect,
-      'bg-red-700': !isInputDataCorrect && !haveCommonElements,
+      'bg-green-700': isInputDataCorrect || variant === 'correct',
+      'bg-orange-700':
+        (haveCommonElements && !isInputDataCorrect) || variant === 'partial',
+      'bg-red-700':
+        (!isInputDataCorrect && !haveCommonElements) || variant === 'incorrect',
     }
   );
 
@@ -39,7 +42,7 @@ export const GuessBox = ({
       className={`flex flex-col items-center justify-center space-y-2 text-xs md:text-sm`}
     >
       <Text>{label}</Text>
-      <div className={boxClasses} style={{ animationDelay: `${delay}ms` }}>
+      <div className={boxClasses}>
         <Text>{areArrays ? inputData.join(', ') : inputData}</Text>
       </div>
     </div>

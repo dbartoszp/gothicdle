@@ -8,6 +8,7 @@ import { Text } from '../ui/Text/Text';
 import { GuessResults } from './GuessResults/GuessResults';
 import { Searchbar } from './Searchbar/Searchbar';
 import { SearchResult } from './SearchResult/SearchResult';
+import { Instructions } from './Instructions/Instructions';
 
 const TEST_INPUT_CHAR_ID = 1;
 const TEST_CORRECT_CHAR_ID = 1;
@@ -45,10 +46,13 @@ export const MainGameCard = () => {
   return (
     <Card>
       {isGuessed ? (
-        <Text>
-          Gratulacje! Dzisiejsza postac to{' '}
-          <span className='text-green-500'>{correctCharacter.data.imie}</span>
-        </Text>
+        <div className='mb-6 mt-2 md:my-8'>
+          <Text variant='subtitle'>
+            Gratulacje! Dzisiejsza postac to{' '}
+            <span className='text-green-500'>{correctCharacter.data.imie}</span>
+            !
+          </Text>
+        </div>
       ) : (
         <div className='relative justify-center'>
           <Searchbar
@@ -56,7 +60,7 @@ export const MainGameCard = () => {
             onSubmit={() => console.log(testGetCharactersByName.data)}
             value={searchInput}
           />
-          <div className='absolute w-full'>
+          <div className='absolute max-h-36 w-full overflow-y-scroll border border-default-border'>
             {searchInput &&
               charactersAvailableToGuess?.map((character, i) => (
                 <SearchResult

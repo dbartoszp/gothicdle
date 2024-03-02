@@ -15,7 +15,7 @@ export const TitleCard = () => {
           Gothicdle
         </span>
       </Text>
-      <Text variant='danger'>Tu jakies instrukcje beda</Text>
+      <Text variant='danger'>Tu jakies przyciski?? beda</Text>
     </Card>
   );
 };

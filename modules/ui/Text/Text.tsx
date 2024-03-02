@@ -12,7 +12,8 @@ type ClassNames = {
 
 const variants: ClassNames = {
   default: 'text-sm',
-  title: 'text-4xl  tracking-widest',
+  title: 'text-5xl md:text-7xl tracking-widest',
+  subtitle: 'text-xl  tracking-wide',
   danger: 'text-md text-red-500',
   green: 'text-md text-green-500',
 };
