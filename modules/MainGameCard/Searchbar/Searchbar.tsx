@@ -33,9 +33,6 @@ export const Searchbar: React.FC<SearchbarProps> = ({
         className='border border-default-border bg-neutral-950 px-2 py-1 opacity-80'
         autoComplete='off'
       />
-      {/* <Button size='md' onClick={onSubmit}>
-        <Text>Submit</Text>
-      </Button> */}
     </div>
   );
 };

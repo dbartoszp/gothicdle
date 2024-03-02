@@ -8,23 +8,35 @@ import { Card } from '../ui/Card/Card';
 import { Text } from '../ui/Text/Text';
 import { GuessResults } from './GuessResults/GuessResults';
 import { Searchbar } from './Searchbar/Searchbar';
+import { SearchResult } from './SearchResult/SearchResult';
 
 const TEST_INPUT_CHAR_ID = 1;
 const TEST_CORRECT_CHAR_ID = 2;
 
 export const MainGameCard = () => {
-  const character = useGetCharacterById(TEST_CORRECT_CHAR_ID);
+  const correctCharacter = useGetCharacterById(TEST_CORRECT_CHAR_ID);
+
   const [searchInput, setSearchInput] = useState('');
-  const [guessesMade, setGuessesMade] = useState([]);
+  const [guessesMade, setGuessesMade] = useState<number[]>([]);
   const testGetCharactersByName = useGetCharactersByName(searchInput);
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     setSearchInput(e.target.value);
   };
+  const handleMakeNewGuess = (guessId: number) => {
+    const newGuesses = [...guessesMade, guessId];
+    setGuessesMade(newGuesses);
+  };
 
-  if (character.isLoading) return <Text variant='danger'>Loading gierki</Text>;
-  if (!character.isSuccess) return <Text variant='danger'>Error message</Text>;
+  const charactersAvailableToGuess = testGetCharactersByName?.data?.filter(
+    (character) => !guessesMade.includes(character.id)
+  );
+
+  if (correctCharacter.isLoading)
+    return <Text variant='danger'>Loading gierki</Text>;
+  if (!correctCharacter.isSuccess)
+    return <Text variant='danger'>Error message</Text>;
 
   return (
     <Card>
@@ -35,15 +47,23 @@ export const MainGameCard = () => {
         // searchResults={testGetCharactersByName.data}
       />
       {searchInput &&
-        testGetCharactersByName?.data?.map((character) => (
-          <Text key={character.imie}>{character.imie}</Text>
+        charactersAvailableToGuess?.map((character) => (
+          <SearchResult
+            onClick={() => handleMakeNewGuess(character.id)}
+            characterName={character.imie}
+            key={character.imie}
+          />
+        ))}
+      {guessesMade &&
+        guessesMade.map((id) => (
+          <GuessResults
+            key={id}
+            character={correctCharacter.data}
+            inputCharacterId={id}
+          />
         ))}
 
-      <GuessResults
-        character={character.data}
-        inputCharacterId={TEST_INPUT_CHAR_ID}
-      />
-      <Text>Dzisiejsza postac to {character.data.imie}</Text>
+      <Text>Dzisiejsza postac to {correctCharacter.data.imie}</Text>
     </Card>
   );
 };

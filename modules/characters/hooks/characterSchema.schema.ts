@@ -7,6 +7,7 @@ export const characterSchema = z.object({
   bron: z.array(z.string()),
   zbroja: z.array(z.string()),
   zdjecie: z.string(),
+  id: z.number(),
 });
 
 export const characterArraySchema = z.array(characterSchema);
