@@ -24,15 +24,13 @@ export const Searchbar: React.FC<SearchbarProps> = ({
   value = '',
 }) => {
   return (
-    <div>
-      <input
-        type='text'
-        onChange={onChange}
-        placeholder='Search'
-        value={value}
-        className='border border-default-border bg-neutral-950 px-2 py-1 opacity-80'
-        autoComplete='off'
-      />
-    </div>
+    <input
+      type='text'
+      onChange={onChange}
+      placeholder='Search'
+      value={value}
+      className='border border-default-border bg-neutral-950 px-2 py-1 opacity-80'
+      autoComplete='off'
+    />
   );
 };

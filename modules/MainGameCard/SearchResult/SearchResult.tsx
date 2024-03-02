@@ -9,8 +9,11 @@ type SearchResultProps = {
 
 export const SearchResult = ({ onClick, characterName }: SearchResultProps) => {
   return (
-    <Button onClick={onClick}>
+    <button
+      className='w-full border border-default-border bg-neutral-950 py-2 opacity-90'
+      onClick={onClick}
+    >
       <Text>{characterName}</Text>
-    </Button>
+    </button>
   );
 };

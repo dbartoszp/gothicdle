@@ -22,9 +22,10 @@
 body {
   color: #fdf7e6;
   background: #182d39;
-  background-image: url("../public/imgs/background.png");
+  background-image: url('../public/imgs/background.png');
   background-size: cover;
   background-position: center;
+  background-attachment: fixed;
 }
 
 @layer utilities {
