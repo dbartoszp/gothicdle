@@ -1,5 +1,3 @@
-'use client';
-
 import { ChangeEvent, useState } from 'react';
 import { useGetCharacterById } from '../characters/hooks/useGetCharacterById/useGetCharacterById';
 import { useGetCharactersByName } from '../characters/hooks/useGetCharactersByName/useGetCharactersByName';
@@ -9,13 +7,23 @@ import { GuessResults } from './GuessResults/GuessResults';
 import { Searchbar } from './Searchbar/Searchbar';
 import { SearchResult } from './SearchResult/SearchResult';
 
-const TEST_INPUT_CHAR_ID = 1;
-const TEST_CORRECT_CHAR_ID = 1;
+type MainGameCardProps = {
+  correctCharacterId: number;
+};
 
-export const MainGameCard = () => {
-  const correctCharacter = useGetCharacterById(TEST_CORRECT_CHAR_ID);
+const TEST_CORRECT_CHAR_ID = 2;
 
-  const [isGuessed, setIsGuessed] = useState(false);
+export const MainGameCard = ({ correctCharacterId }: MainGameCardProps) => {
+  const correctCharacter = useGetCharacterById(correctCharacterId);
+
+  const [isCorrectlyGuessed, setIsCorrectlyGuessed] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const storedValue = localStorage.getItem('isCorrectlyGuessed');
+      if (!storedValue)
+        localStorage.setItem('isCorrectlyGuessed', JSON.stringify(false));
+      return storedValue ? JSON.parse(storedValue) : false;
+    }
+  });
   const [searchInput, setSearchInput] = useState('');
   const [guessesMade, setGuessesMade] = useState<number[]>([]);
 
@@ -30,7 +38,10 @@ export const MainGameCard = () => {
     const newGuesses = [...guessesMade, guessId];
     setGuessesMade(newGuesses);
     setSearchInput('');
-    if (guessId === TEST_CORRECT_CHAR_ID) setIsGuessed(true);
+    if (guessId === TEST_CORRECT_CHAR_ID) {
+      setIsCorrectlyGuessed(true);
+      localStorage.setItem('isCorrectlyGuessed', JSON.stringify(true));
+    }
   };
 
   const charactersAvailableToGuess = testGetCharactersByName?.data?.filter(
@@ -44,7 +55,7 @@ export const MainGameCard = () => {
 
   return (
     <Card>
-      {isGuessed ? (
+      {isCorrectlyGuessed ? (
         <div className='mb-6 mt-2 md:my-8'>
           <Text variant='subtitle'>
             Gratulacje! Dzisiejsza postac to{' '}
@@ -67,7 +78,7 @@ export const MainGameCard = () => {
           </div>
         </div>
       )}
-      {!isGuessed && guessesMade.length === 0 && (
+      {!isCorrectlyGuessed && guessesMade.length === 0 && (
         <div className='my-6 text-sm'>
           <Text>Wprowadz pierwsza postac do odgadniecia!</Text>
         </div>
