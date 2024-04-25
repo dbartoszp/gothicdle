@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const previousCorrectCharacterSchema = z.array(
+export const previousCharactersIdsSchema = z.array(
   z.object({
     characterId: z.number(),
   })

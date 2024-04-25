@@ -11,8 +11,6 @@ type MainGameCardProps = {
   correctCharacterId: number;
 };
 
-const TEST_CORRECT_CHAR_ID = 2;
-
 export const MainGameCard = ({ correctCharacterId }: MainGameCardProps) => {
   const correctCharacter = useGetCharacterById(correctCharacterId);
 
@@ -38,7 +36,7 @@ export const MainGameCard = ({ correctCharacterId }: MainGameCardProps) => {
     const newGuesses = [...guessesMade, guessId];
     setGuessesMade(newGuesses);
     setSearchInput('');
-    if (guessId === TEST_CORRECT_CHAR_ID) {
+    if (guessId === correctCharacterId) {
       setIsCorrectlyGuessed(true);
       localStorage.setItem('isCorrectlyGuessed', JSON.stringify(true));
     }
