@@ -52,7 +52,6 @@ export const MainGameCard = ({ correctCharacterId }: MainGameCardProps) => {
 			setIsCorrectlyGuessed(true);
 			localStorage.setItem('isCorrectlyGuessed', JSON.stringify(true));
 			localStorage.setItem('guessedCharacter', JSON.stringify(guessId));
-			setGuessesMade([]);
 		}
 	};
 
@@ -67,6 +66,11 @@ export const MainGameCard = ({ correctCharacterId }: MainGameCardProps) => {
 
 	return (
 		<Card>
+			{!isCorrectlyGuessed && (
+				<div className="my-6 text-sm">
+					<Text>Wprowadz postac do odgadniecia!</Text>
+				</div>
+			)}
 			{isCorrectlyGuessed && lastGuess === correctCharacterId ? (
 				<div className="mb-6 mt-2 md:my-8">
 					<Text variant="subtitle">
@@ -97,25 +101,18 @@ export const MainGameCard = ({ correctCharacterId }: MainGameCardProps) => {
 					</div>
 				</div>
 			)}
-			{!isCorrectlyGuessed && guessesMade.length === 0 && (
-				<div className="my-6 text-sm">
-					<Text>Wprowadz pierwsza postac do odgadniecia!</Text>
-				</div>
-			)}
-			{guessesMade && (
-				<div className="mt-4">
-					{guessesMade
-						.slice()
-						.reverse()
-						.map((id) => (
-							<GuessResults
-								key={id}
-								character={correctCharacter.data}
-								inputCharacterId={id}
-							/>
-						))}
-				</div>
-			)}
+			<div className="mt-4">
+				{guessesMade
+					.slice()
+					.reverse()
+					.map((id) => (
+						<GuessResults
+							key={id}
+							character={correctCharacter.data}
+							inputCharacterId={id}
+						/>
+					))}
+			</div>
 		</Card>
 	);
 };
