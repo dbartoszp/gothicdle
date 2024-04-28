@@ -1,5 +1,4 @@
 'use client';
-import React, { useState, useEffect, useCallback } from 'react';
 import { Footer } from '@/modules/Footer/Footer';
 import { Instructions } from '@/modules/MainGameCard/Instructions/Instructions';
 import { MainGameCard } from '@/modules/MainGameCard/MainGameCard';
@@ -20,14 +19,13 @@ export default function Home() {
 	return (
 		<>
 			<main className="flex min-h-screen flex-col items-center space-y-12 pt-12">
-				<Button
+				{/* <Button
 					onClick={() =>
 						console.log(currentCorrectCharacterData.characterId)
 					}
 				>
 					charId: {currentCorrectCharacterData.characterId}
-				</Button>
-				<Text variant="danger">Kolejna postać za:</Text>
+				</Button> */}
 				<TitleHeader />
 				{currentCorrectCharacterData && (
 					<MainGameCard
