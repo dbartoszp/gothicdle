@@ -2,16 +2,28 @@
 import { Footer } from '@/modules/Footer/Footer';
 import { Instructions } from '@/modules/MainGameCard/Instructions/Instructions';
 import { MainGameCard } from '@/modules/MainGameCard/MainGameCard';
+import { MainGameCardSkeleton } from '@/modules/MainGameCard/MainGameCardSkeleton/MainGameCardSkeleton';
 import { TitleHeader } from '@/modules/TitleHeader/TitleHeader';
 import { useGetCurrentCorrectCharacter } from '@/modules/characters/hooks/useGetCurrentCorrectCharacter/useGetCurrentCorrectCharacter';
-import { Button } from '@/modules/ui/Button/Button';
-import { Text } from '@/modules/ui/Text/Text';
+import { Card } from '@/modules/ui/Card/Card';
+import { ErrorMessage } from '@/modules/ui/ErrorMessage/ErrorMessage';
+
+const ERROR_MSG =
+	'Wystapil problem z ladowaniem gry. Sprobuj ponownie pozniej!';
 
 export default function Home() {
 	const currentCorrectCharacter = useGetCurrentCorrectCharacter();
 
+	if (currentCorrectCharacter.isLoading) {
+		return <MainGameCardSkeleton />;
+	}
+
 	if (!currentCorrectCharacter.isSuccess) {
-		return <Text>ERROR</Text>;
+		return (
+			<Card>
+				<ErrorMessage message={ERROR_MSG} />;
+			</Card>
+		);
 	}
 
 	const currentCorrectCharacterData = currentCorrectCharacter.data;
@@ -19,13 +31,6 @@ export default function Home() {
 	return (
 		<>
 			<main className="flex min-h-screen flex-col items-center space-y-12 pt-12">
-				{/* <Button
-					onClick={() =>
-						console.log(currentCorrectCharacterData.characterId)
-					}
-				>
-					charId: {currentCorrectCharacterData.characterId}
-				</Button> */}
 				<TitleHeader />
 				{currentCorrectCharacterData && (
 					<MainGameCard

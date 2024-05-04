@@ -6,6 +6,7 @@ import { Text } from '../ui/Text/Text';
 import { GuessResults } from './GuessResults/GuessResults';
 import { Searchbar } from './Searchbar/Searchbar';
 import { SearchResult } from './SearchResult/SearchResult';
+import Skeleton from 'react-loading-skeleton';
 
 type MainGameCardProps = {
 	correctCharacterId: number;
@@ -60,7 +61,11 @@ export const MainGameCard = ({ correctCharacterId }: MainGameCardProps) => {
 	);
 
 	if (correctCharacter.isLoading)
-		return <Text variant="danger">Loading gierki</Text>;
+		return (
+			<Card>
+				<Skeleton width={300} height={100} />
+			</Card>
+		);
 	if (!correctCharacter.isSuccess)
 		return <Text variant="danger">Error message</Text>;
 
