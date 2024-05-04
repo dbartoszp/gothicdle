@@ -46,6 +46,7 @@ const compareData = (
 const handleCopyToClipboard = (rows: string[][]) => {
 	const formattedText = rows
 		.map((singleRow) => singleRow.join(''))
+		.reverse()
 		.join('\n');
 
 	const clipboardText =
@@ -74,6 +75,7 @@ export const GameSummary = ({
 		.slice()
 		.reverse()
 		.forEach((character) => {
+			singleRow.push(compareData(correctCharacter.imie, character.imie));
 			singleRow.push(
 				compareData(
 					correctCharacter.przynaleznosc,
