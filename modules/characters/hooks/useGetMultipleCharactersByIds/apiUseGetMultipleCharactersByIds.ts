@@ -5,9 +5,20 @@ export const getMultipleCharactersByIds = async (ids: number[]) => {
 	const supabase = createClientComponentClient();
 
 	const { data } = await supabase.from('character').select('*').in('id', ids);
+
 	const characters = characterArraySchema.safeParse(data);
+
 	if (characters.success) {
-		return characters.data;
+		const charactersMap = new Map();
+		characters.data.forEach((character) => {
+			charactersMap.set(character.id, character);
+		});
+
+		const orderedCharacters = ids.reverse().map((id) => {
+			return charactersMap.get(id);
+		});
+
+		return orderedCharacters;
 	}
 	throw characters.error;
 };

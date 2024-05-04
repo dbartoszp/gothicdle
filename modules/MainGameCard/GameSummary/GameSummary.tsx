@@ -62,7 +62,6 @@ export const GameSummary = ({
 	correctCharacter,
 }: GameSummaryProps) => {
 	const characters = useGetMultipleCharactersByIds(guesses);
-
 	// let mockup = '';
 	let allRows: string[][] = [];
 	let singleRow: string[] = [];
@@ -114,15 +113,20 @@ export const GameSummary = ({
 				razem!
 			</Text>
 			<div>
-				{allRows.map((guess, i) => (
-					//idk jak zrobic bez uzycia indeksu
-					<Text key={guess.join('') + i}>{guess.join('')}</Text>
-				))}
+				{allRows
+					.slice()
+					.reverse()
+					.map((guess, i) => (
+						//idk jak zrobic bez uzycia indeksu
+						<Text key={guess.join('') + i}>{guess.join('')}</Text>
+					))}
 			</div>
 			<div>
 				<Button
 					size="sm"
-					onClick={() => handleCopyToClipboard(allRows)}
+					onClick={() =>
+						handleCopyToClipboard(allRows.slice().reverse())
+					}
 				>
 					<FaRegCopy size={30} />
 				</Button>
