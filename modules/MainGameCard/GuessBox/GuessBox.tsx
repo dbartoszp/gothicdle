@@ -27,7 +27,7 @@ export const GuessBox = ({
 	const haveCommonElements =
 		areArrays && arraysHaveCommonItems(inputData, correctData);
 	const boxClasses = clsx(
-		'aspect-square md:w-32 md:h-32 w-24 h-24 border border-default-border flex items-center justify-center',
+		'aspect-square md:w-40 md:h-40 w-32 h-32 border border-default-border flex items-center justify-center',
 		{
 			'bg-green-700': isInputDataCorrect || variant === 'correct',
 			'bg-orange-700':
@@ -41,11 +41,13 @@ export const GuessBox = ({
 
 	return (
 		<div
-			className={`flex flex-col items-center justify-center space-y-2 text-xs md:text-sm`}
+			className={`flex flex-col items-center justify-center space-y-2 text-xs`}
 		>
 			<Text>{label}</Text>
 			<div className={boxClasses}>
-				<Text>{areArrays ? inputData.join(', ') : inputData}</Text>
+				<Text variant="small">
+					{areArrays ? inputData.join(', ') : inputData}
+				</Text>
 			</div>
 		</div>
 	);

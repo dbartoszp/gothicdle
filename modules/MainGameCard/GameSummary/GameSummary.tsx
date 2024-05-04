@@ -74,7 +74,6 @@ export const GameSummary = ({
 		.slice()
 		.reverse()
 		.forEach((character) => {
-			singleRow.push(compareData(correctCharacter.imie, character.imie));
 			singleRow.push(
 				compareData(
 					correctCharacter.przynaleznosc,
@@ -112,15 +111,33 @@ export const GameSummary = ({
 				Udalo ci sie zgadnac postac w #Gothicdle za {allRows.length}{' '}
 				razem!
 			</Text>
-			<div>
-				{allRows
-					.slice()
-					.reverse()
-					.map((guess, i) => (
-						//idk jak zrobic bez uzycia indeksu
+
+			{allRows.length > 6 ? (
+				<div>
+					{allRows
+						.reverse()
+						.slice(0, 3)
+						.map((guess, i) => (
+							<Text key={guess.join('') + i}>
+								{guess.join('')}
+							</Text>
+						))}
+					<Text>...</Text>
+					{allRows
+						.slice(allRows.length - 3, allRows.length)
+						.map((guess, i) => (
+							<Text key={guess.join('') + i}>
+								{guess.join('')}
+							</Text>
+						))}
+				</div>
+			) : (
+				<div>
+					{allRows.reverse().map((guess, i) => (
 						<Text key={guess.join('') + i}>{guess.join('')}</Text>
 					))}
-			</div>
+				</div>
+			)}
 			<div>
 				<Button
 					size="sm"
