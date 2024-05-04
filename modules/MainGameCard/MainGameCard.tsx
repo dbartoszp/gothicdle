@@ -8,6 +8,7 @@ import { Searchbar } from './Searchbar/Searchbar';
 import { SearchResult } from './SearchResult/SearchResult';
 import Skeleton from 'react-loading-skeleton';
 import { ErrorMessage } from '../ui/ErrorMessage/ErrorMessage';
+import { GameSummary } from './GameSummary/GameSummary';
 
 const currentDate = new Date();
 const day = currentDate.getDate();
@@ -108,6 +109,10 @@ export const MainGameCard = ({ correctCharacterId }: MainGameCardProps) => {
 						</span>
 						!
 					</Text>
+					<GameSummary
+						guesses={gameState.guesses}
+						correctCharacter={correctCharacter.data}
+					/>
 				</div>
 			) : (
 				<div className="relative justify-center">
