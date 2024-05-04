@@ -7,6 +7,7 @@ import { GuessResults } from './GuessResults/GuessResults';
 import { Searchbar } from './Searchbar/Searchbar';
 import { SearchResult } from './SearchResult/SearchResult';
 import Skeleton from 'react-loading-skeleton';
+import { ErrorMessage } from '../ui/ErrorMessage/ErrorMessage';
 
 const currentDate = new Date();
 const day = currentDate.getDate();
@@ -51,6 +52,7 @@ export const MainGameCard = ({ correctCharacterId }: MainGameCardProps) => {
 			...gameState,
 			guesses: [...gameState.guesses, guessId],
 		});
+		console.log(guessId);
 		localStorage.setItem(
 			'gameState',
 			JSON.stringify({
@@ -61,12 +63,14 @@ export const MainGameCard = ({ correctCharacterId }: MainGameCardProps) => {
 		if (guessId === correctCharacterId) {
 			setGameState({
 				...gameState,
+				guesses: [...gameState.guesses, guessId],
 				isCorrectlyGuessed: true,
 			});
 			localStorage.setItem(
 				'gameState',
 				JSON.stringify({
 					...gameState,
+					guesses: [...gameState.guesses, guessId],
 					isCorrectlyGuessed: true,
 				})
 			);
@@ -84,17 +88,14 @@ export const MainGameCard = ({ correctCharacterId }: MainGameCardProps) => {
 			</Card>
 		);
 	if (!correctCharacter.isSuccess)
-		return <Text variant="danger">Error message</Text>;
+		return (
+			<ErrorMessage message="Nastapil problem z wczytywaniem gry. Sproboj ponownie pozniej!" />
+		);
 
 	return (
 		<Card>
 			{!gameState.isCorrectlyGuessed && (
 				<div className="my-6 text-sm">
-					{gameState.date === defaultGameState.date
-						? 'git'
-						: 'nie git'}
-					{gameState.date}
-					{defaultGameState.date}
 					<Text>Wprowadz postac do odgadniecia!</Text>
 				</div>
 			)}
