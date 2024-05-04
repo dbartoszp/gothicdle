@@ -4,6 +4,8 @@ import type { Metadata } from 'next';
 import localFont from '@next/font/local';
 import { ReactQueryProvider } from './ReactQueryProvider';
 import { SkeletonTheme } from 'react-loading-skeleton';
+import { Footer } from '@/modules/Footer/Footer';
+import { Toaster } from 'react-hot-toast';
 
 const gothicFont = localFont({
 	src: [{ path: '../public/fonts/Gothic2Nacht.ttf', weight: '300' }],
@@ -26,6 +28,26 @@ export default function RootLayout({
 				<ReactQueryProvider>
 					<SkeletonTheme baseColor="#0c161b" highlightColor="#3f7391">
 						{children}
+						<Footer />
+						<Toaster
+							position="top-center"
+							containerStyle={{ margin: '8px' }}
+							toastOptions={{
+								success: {
+									duration: 2000,
+								},
+								error: {
+									duration: 5000,
+								},
+								style: {
+									fontSize: '16px',
+									maxWidth: '500px',
+									padding: '16px 24px',
+									backgroundColor: '#182d39',
+									color: '#fdf7e6',
+								},
+							}}
+						/>
 					</SkeletonTheme>
 				</ReactQueryProvider>
 			</body>

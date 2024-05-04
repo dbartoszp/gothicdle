@@ -4,6 +4,7 @@ import { arraysHaveSameItems } from '@/modules/characters/utils/arraysHaveSameIt
 import { Button } from '@/modules/ui/Button/Button';
 import { ErrorMessage } from '@/modules/ui/ErrorMessage/ErrorMessage';
 import { Text } from '@/modules/ui/Text/Text';
+import toast from 'react-hot-toast';
 import { FaRegCopy } from 'react-icons/fa';
 
 type Character = {
@@ -53,7 +54,7 @@ const handleCopyToClipboard = (rows: string[][]) => {
 		`\n (tu bedzie link do stronki)`;
 
 	navigator.clipboard.writeText(clipboardText);
-	alert('TU BEDZIE TOAST');
+	toast.success('Skopiowano do schowka');
 };
 
 export const GameSummary = ({
@@ -106,7 +107,6 @@ export const GameSummary = ({
 			singleRow = [];
 		});
 
-	console.log(characters.data);
 	return (
 		<div className="mt-8 mb-4 flex flex-col space-y-4">
 			<Text>

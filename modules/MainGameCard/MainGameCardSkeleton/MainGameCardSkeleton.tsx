@@ -14,7 +14,6 @@ export const MainGameCardSkeleton = () => {
 				</Card>
 				<Instructions />
 			</main>
-			<Footer />
 		</>
 	);
 };

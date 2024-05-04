@@ -1,5 +1,4 @@
 'use client';
-import { Footer } from '@/modules/Footer/Footer';
 import { Instructions } from '@/modules/MainGameCard/Instructions/Instructions';
 import { MainGameCard } from '@/modules/MainGameCard/MainGameCard';
 import { MainGameCardSkeleton } from '@/modules/MainGameCard/MainGameCardSkeleton/MainGameCardSkeleton';
@@ -41,7 +40,6 @@ export default function Home() {
 				)}
 				<Instructions />
 			</main>
-			<Footer />
 		</>
 	);
 }
