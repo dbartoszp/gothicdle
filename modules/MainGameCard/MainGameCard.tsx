@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from 'react';
+import React, { useState, useEffect, ChangeEvent } from 'react';
 import { useGetCharacterById } from '../characters/hooks/useGetCharacterById/useGetCharacterById';
 import { useGetCharactersByName } from '../characters/hooks/useGetCharactersByName/useGetCharactersByName';
 import { Card } from '../ui/Card/Card';
@@ -18,135 +18,150 @@ const year = currentDate.getFullYear();
 const formattedDate = `${day}-${month}-${year}`;
 
 const defaultGameState = {
-	date: formattedDate,
-	guesses: [],
-	isCorrectlyGuessed: false,
+  date: formattedDate,
+  guesses: [],
+  isCorrectlyGuessed: false,
 };
 
 const storedGameState = localStorage.getItem('gameState');
 
 type MainGameCardProps = {
-	correctCharacterId: number;
+  correctCharacterId: number;
 };
 
 export const MainGameCard = ({ correctCharacterId }: MainGameCardProps) => {
-	const correctCharacter = useGetCharacterById(correctCharacterId);
+  const correctCharacter = useGetCharacterById(correctCharacterId);
 
-	const [searchInput, setSearchInput] = useState('');
-	const [gameState, setGameState] = useState(
-		storedGameState &&
-			JSON.parse(storedGameState).date === defaultGameState.date
-			? JSON.parse(storedGameState)
-			: defaultGameState
-	);
+  const [searchInput, setSearchInput] = useState('');
+  const [gameState, setGameState] = useState(
+    storedGameState &&
+      JSON.parse(storedGameState).date === defaultGameState.date
+      ? JSON.parse(storedGameState)
+      : defaultGameState
+  );
 
-	const testGetCharactersByName = useGetCharactersByName(searchInput);
+  const [showSearchbar, setShowSearchbar] = useState(true);
+  const [showCongratulatoryMessage, setShowCongratulatoryMessage] =
+    useState(false);
 
-	const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-		e.preventDefault();
-		setSearchInput(e.target.value);
-	};
+  const testGetCharactersByName = useGetCharactersByName(searchInput);
 
-	const handleMakeNewGuess = (guessId: number) => {
-		setSearchInput('');
-		setGameState({
-			...gameState,
-			guesses: [...gameState.guesses, guessId],
-		});
-		console.log(guessId);
-		localStorage.setItem(
-			'gameState',
-			JSON.stringify({
-				...gameState,
-				guesses: [...gameState.guesses, guessId],
-			})
-		);
-		if (guessId === correctCharacterId) {
-			setGameState({
-				...gameState,
-				guesses: [...gameState.guesses, guessId],
-				isCorrectlyGuessed: true,
-			});
-			localStorage.setItem(
-				'gameState',
-				JSON.stringify({
-					...gameState,
-					guesses: [...gameState.guesses, guessId],
-					isCorrectlyGuessed: true,
-				})
-			);
-		}
-	};
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    setSearchInput(e.target.value);
+  };
 
-	const charactersAvailableToGuess = testGetCharactersByName?.data?.filter(
-		(character) => !gameState.guesses.includes(character.id)
-	);
+  const handleMakeNewGuess = (guessId: number) => {
+    setSearchInput('');
+    setGameState({
+      ...gameState,
+      guesses: [...gameState.guesses, guessId],
+    });
+    localStorage.setItem(
+      'gameState',
+      JSON.stringify({
+        ...gameState,
+        guesses: [...gameState.guesses, guessId],
+      })
+    );
+    if (guessId === correctCharacterId) {
+      setShowSearchbar(false);
+      setGameState({
+        ...gameState,
+        guesses: [...gameState.guesses, guessId],
+        isCorrectlyGuessed: true,
+      });
+      localStorage.setItem(
+        'gameState',
+        JSON.stringify({
+          ...gameState,
+          guesses: [...gameState.guesses, guessId],
+          isCorrectlyGuessed: true,
+        })
+      );
+    }
+  };
 
-	if (correctCharacter.isLoading)
-		return (
-			<Card>
-				<Skeleton width={300} height={100} />
-			</Card>
-		);
-	if (!correctCharacter.isSuccess)
-		return (
-			<ErrorMessage message="Nastapil problem z wczytywaniem gry. Sproboj ponownie pozniej!" />
-		);
+  const charactersAvailableToGuess = testGetCharactersByName?.data?.filter(
+    (character) => !gameState.guesses.includes(character.id)
+  );
 
-	return (
-		<Card>
-			{!gameState.isCorrectlyGuessed && (
-				<div className="my-6 text-sm">
-					<Text>Wprowadz postac do odgadniecia!</Text>
-				</div>
-			)}
-			{gameState.isCorrectlyGuessed ? (
-				<div className="mb-6 mt-2 md:my-8">
-					<Text variant="subtitle">
-						Gratulacje! Dzisiejsza postac to{' '}
-						<span className="text-green-500">
-							{correctCharacter.data.imie}
-						</span>
-						!
-					</Text>
-					<GameSummary
-						guesses={gameState.guesses}
-						correctCharacter={correctCharacter.data}
-					/>
-				</div>
-			) : (
-				<div className="relative justify-center">
-					<Searchbar
-						onChange={handleInputChange}
-						value={searchInput}
-					/>
-					<div className="absolute max-h-36 w-full overflow-y-auto border border-t-0 border-default-border md:max-h-72">
-						{searchInput &&
-							charactersAvailableToGuess?.map((character, i) => (
-								<SearchResult
-									onClick={() =>
-										handleMakeNewGuess(character.id)
-									}
-									characterName={character.imie}
-									key={character.imie}
-								/>
-							))}
-					</div>
-				</div>
-			)}
-			<div className="mt-4">
-				{gameState.guesses.length > 0 &&
-					gameState.guesses
-						.slice()
-						.reverse()
-						.map((id: number) => (
-							<GuessResults
-								key={id}
-								character={correctCharacter.data}
-								inputCharacterId={id}
-							/>
-						))}
-			</div>
-		</Card>
-	);
+  useEffect(() => {
+    if (gameState.isCorrectlyGuessed) {
+      const timeoutId = setTimeout(() => {
+        setShowCongratulatoryMessage(true);
+      }, 2500);
+
+      return () => clearTimeout(timeoutId);
+    }
+  }, [gameState.isCorrectlyGuessed]);
+
+  if (correctCharacter.isLoading) {
+    return (
+      <Card>
+        <Skeleton width={300} height={100} />
+      </Card>
+    );
+  }
+  if (!correctCharacter.isSuccess) {
+    return (
+      <ErrorMessage message='Nastąpił problem z wczytywaniem gry. Spróbuj ponownie później!' />
+    );
+  }
+
+  return (
+    <Card>
+      {!gameState.isCorrectlyGuessed && (
+        <div className='my-6 text-sm'>
+          <Text>Wprowadź postać do odgadnięcia!</Text>
+        </div>
+      )}
+
+      {showCongratulatoryMessage && (
+        <div className='mb-6 mt-2 md:my-8'>
+          <Text variant='subtitle'>
+            Gratulacje! Dzisiejsza postać to{' '}
+            <span className='text-green-500'>{correctCharacter.data.imie}</span>
+            !
+          </Text>
+          <GameSummary
+            guesses={gameState.guesses}
+            correctCharacter={correctCharacter.data}
+          />
+        </div>
+      )}
+
+      <div className='relative justify-center'>
+        {showSearchbar && !gameState.isCorrectlyGuessed && (
+          <>
+            <Searchbar onChange={handleInputChange} value={searchInput} />
+            <div className='absolute max-h-36 w-full overflow-y-auto border border-t-0 border-default-border md:max-h-72'>
+              {searchInput &&
+                charactersAvailableToGuess?.map((character) => (
+                  <SearchResult
+                    onClick={() => handleMakeNewGuess(character.id)}
+                    characterName={character.imie}
+                    key={character.imie}
+                  />
+                ))}
+            </div>
+          </>
+        )}
+      </div>
+
+      <div className='mt-4'>
+        {gameState.guesses.length > 0 &&
+          gameState.guesses
+            .slice()
+            .reverse()
+            .map((id: number) => (
+              <GuessResults
+                key={id}
+                character={correctCharacter.data}
+                inputCharacterId={id}
+              />
+            ))}
+      </div>
+    </Card>
+  );
 };
