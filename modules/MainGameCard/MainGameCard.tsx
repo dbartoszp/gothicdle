@@ -6,6 +6,24 @@ import { Text } from '../ui/Text/Text';
 import { GuessResults } from './GuessResults/GuessResults';
 import { Searchbar } from './Searchbar/Searchbar';
 import { SearchResult } from './SearchResult/SearchResult';
+import Skeleton from 'react-loading-skeleton';
+import { ErrorMessage } from '../ui/ErrorMessage/ErrorMessage';
+import { GameSummary } from './GameSummary/GameSummary';
+
+const currentDate = new Date();
+const day = currentDate.getDate();
+const month = currentDate.getMonth() + 1;
+const year = currentDate.getFullYear();
+
+const formattedDate = `${day}-${month}-${year}`;
+
+const defaultGameState = {
+	date: formattedDate,
+	guesses: [],
+	isCorrectlyGuessed: false,
+};
+
+const storedGameState = localStorage.getItem('gameState');
 
 type MainGameCardProps = {
 	correctCharacterId: number;
@@ -14,27 +32,13 @@ type MainGameCardProps = {
 export const MainGameCard = ({ correctCharacterId }: MainGameCardProps) => {
 	const correctCharacter = useGetCharacterById(correctCharacterId);
 
-	const [isCorrectlyGuessed, setIsCorrectlyGuessed] = useState(() => {
-		if (typeof window !== 'undefined') {
-			const storedValue = localStorage.getItem('isCorrectlyGuessed');
-			if (!storedValue)
-				localStorage.setItem(
-					'isCorrectlyGuessed',
-					JSON.stringify(false)
-				);
-			return storedValue ? JSON.parse(storedValue) : false;
-		}
-	});
 	const [searchInput, setSearchInput] = useState('');
-	const [guessesMade, setGuessesMade] = useState<number[]>([]);
-	const [lastGuess, setLastGuess] = useState(() => {
-		if (typeof window !== 'undefined') {
-			const storedValue = localStorage.getItem('guessedCharacter');
-			if (!storedValue)
-				localStorage.setItem('guessedCharacter', JSON.stringify(false));
-			return storedValue ? JSON.parse(storedValue) : false;
-		}
-	});
+	const [gameState, setGameState] = useState(
+		storedGameState &&
+			JSON.parse(storedGameState).date === defaultGameState.date
+			? JSON.parse(storedGameState)
+			: defaultGameState
+	);
 
 	const testGetCharactersByName = useGetCharactersByName(searchInput);
 
@@ -44,34 +48,59 @@ export const MainGameCard = ({ correctCharacterId }: MainGameCardProps) => {
 	};
 
 	const handleMakeNewGuess = (guessId: number) => {
-		const newGuesses = [...guessesMade, guessId];
-		setGuessesMade(newGuesses);
 		setSearchInput('');
-		setLastGuess(guessId);
+		setGameState({
+			...gameState,
+			guesses: [...gameState.guesses, guessId],
+		});
+		console.log(guessId);
+		localStorage.setItem(
+			'gameState',
+			JSON.stringify({
+				...gameState,
+				guesses: [...gameState.guesses, guessId],
+			})
+		);
 		if (guessId === correctCharacterId) {
-			setIsCorrectlyGuessed(true);
-			localStorage.setItem('isCorrectlyGuessed', JSON.stringify(true));
-			localStorage.setItem('guessedCharacter', JSON.stringify(guessId));
+			setGameState({
+				...gameState,
+				guesses: [...gameState.guesses, guessId],
+				isCorrectlyGuessed: true,
+			});
+			localStorage.setItem(
+				'gameState',
+				JSON.stringify({
+					...gameState,
+					guesses: [...gameState.guesses, guessId],
+					isCorrectlyGuessed: true,
+				})
+			);
 		}
 	};
 
 	const charactersAvailableToGuess = testGetCharactersByName?.data?.filter(
-		(character) => !guessesMade.includes(character.id)
+		(character) => !gameState.guesses.includes(character.id)
 	);
 
 	if (correctCharacter.isLoading)
-		return <Text variant="danger">Loading gierki</Text>;
+		return (
+			<Card>
+				<Skeleton width={300} height={100} />
+			</Card>
+		);
 	if (!correctCharacter.isSuccess)
-		return <Text variant="danger">Error message</Text>;
+		return (
+			<ErrorMessage message="Nastapil problem z wczytywaniem gry. Sproboj ponownie pozniej!" />
+		);
 
 	return (
 		<Card>
-			{!isCorrectlyGuessed && (
+			{!gameState.isCorrectlyGuessed && (
 				<div className="my-6 text-sm">
 					<Text>Wprowadz postac do odgadniecia!</Text>
 				</div>
 			)}
-			{isCorrectlyGuessed && lastGuess === correctCharacterId ? (
+			{gameState.isCorrectlyGuessed ? (
 				<div className="mb-6 mt-2 md:my-8">
 					<Text variant="subtitle">
 						Gratulacje! Dzisiejsza postac to{' '}
@@ -80,6 +109,10 @@ export const MainGameCard = ({ correctCharacterId }: MainGameCardProps) => {
 						</span>
 						!
 					</Text>
+					<GameSummary
+						guesses={gameState.guesses}
+						correctCharacter={correctCharacter.data}
+					/>
 				</div>
 			) : (
 				<div className="relative justify-center">
@@ -102,16 +135,17 @@ export const MainGameCard = ({ correctCharacterId }: MainGameCardProps) => {
 				</div>
 			)}
 			<div className="mt-4">
-				{guessesMade
-					.slice()
-					.reverse()
-					.map((id) => (
-						<GuessResults
-							key={id}
-							character={correctCharacter.data}
-							inputCharacterId={id}
-						/>
-					))}
+				{gameState.guesses.length > 0 &&
+					gameState.guesses
+						.slice()
+						.reverse()
+						.map((id: number) => (
+							<GuessResults
+								key={id}
+								character={correctCharacter.data}
+								inputCharacterId={id}
+							/>
+						))}
 			</div>
 		</Card>
 	);
