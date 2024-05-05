@@ -21,12 +21,28 @@ module.exports = {
       },
       animation: {
         fade: 'fadeIn .5s ease-in-out',
+        hflip: 'flipHorizontal 1s ease-in',
+        flipFadeIn: 'flipFadeIn .5s ease-in-out',
       },
 
       keyframes: {
         fadeIn: {
           from: { opacity: 0 },
           to: { opacity: 1 },
+        },
+        flipHorizontal: {
+          '50%': { transform: 'rotateY(180deg)' },
+        },
+        flipFadeIn: {
+          '0%': {
+            opacity: 0,
+            transform: 'rotateY(90deg)',
+          },
+
+          '100%': {
+            opacity: 1,
+            transform: 'rotateY(0deg)',
+          },
         },
       },
     },

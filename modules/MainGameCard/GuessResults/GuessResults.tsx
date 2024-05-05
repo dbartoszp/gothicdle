@@ -1,68 +1,66 @@
 import { useGetCharacterById } from '@/modules/characters/hooks/useGetCharacterById/useGetCharacterById';
 import { GuessBox } from '../GuessBox/GuessBox';
-import { Text } from '@/modules/ui/Text/Text';
 import { ErrorMessage } from '@/modules/ui/ErrorMessage/ErrorMessage';
 import { GuessResultsSkeleton } from './GuessResultsSkeleton/GuessResultsSkeleton';
 
 type Character = {
-	imie: string;
-	przynaleznosc: string[];
-	wystepowanie: string[];
-	bron: string[];
-	zbroja: string[];
-	zdjecie: string;
+  imie: string;
+  przynaleznosc: string[];
+  wystepowanie: string[];
+  bron: string[];
+  zbroja: string[];
+  zdjecie: string;
 };
 
 type ResultsProps = {
-	character: Character;
-	inputCharacterId: number;
+  character: Character;
+  inputCharacterId: number;
 };
 
 export const GuessResults = ({ character, inputCharacterId }: ResultsProps) => {
-	const inputCharacterData = useGetCharacterById(inputCharacterId);
+  const inputCharacterData = useGetCharacterById(inputCharacterId);
+  if (inputCharacterData.isLoading) return <GuessResultsSkeleton />;
+  if (!inputCharacterData.isSuccess)
+    return (
+      <ErrorMessage message='Nie udalo sie wczytac postaci. Sprobuj ponownie pozniej!' />
+    );
 
-	if (inputCharacterData.isLoading) return <GuessResultsSkeleton />;
-	if (!inputCharacterData.isSuccess)
-		return (
-			<ErrorMessage message="Nie udalo sie wczytac postaci. Sprobuj ponownie pozniej!" />
-		);
+  const inputCharacter = inputCharacterData.data;
 
-	const inputCharacter = inputCharacterData.data;
-
-	return (
-		<>
-			<div className="flex w-72 flex-row justify-between space-x-2 overflow-auto px-2 py-4 md:w-full md:space-x-12">
-				<GuessBox
-					label="Postac"
-					correctData={character.imie}
-					inputData={inputCharacter.imie}
-					// delay={0}
-				/>
-				<GuessBox
-					label="Przynaleznosc"
-					correctData={character.przynaleznosc}
-					inputData={inputCharacter.przynaleznosc}
-					// delay={500}
-				/>
-				<GuessBox
-					label="Wystepowanie"
-					correctData={character.wystepowanie}
-					inputData={inputCharacter.wystepowanie}
-					// delay={1000}
-				/>
-				<GuessBox
-					label="Bron"
-					correctData={character.bron}
-					inputData={inputCharacter.bron}
-					// delay={1500}
-				/>
-				<GuessBox
-					label="Zbroja"
-					correctData={character.zbroja}
-					inputData={inputCharacter.zbroja}
-					// delay={2000}
-				/>
-			</div>
-		</>
-	);
+  return (
+    <>
+      <div className='flex w-72 flex-row justify-between space-x-2 overflow-auto px-2 py-4 md:w-full md:space-x-12'>
+        <GuessBox
+          label='Postac'
+          correctData={character.imie}
+          inputData={inputCharacter.imie}
+          delay={0}
+        />
+        <GuessBox
+          label='Przynaleznosc'
+          correctData={character.przynaleznosc}
+          inputData={inputCharacter.przynaleznosc}
+          delay={500}
+        />
+        <GuessBox
+          label='Wystepowanie'
+          correctData={character.wystepowanie}
+          inputData={inputCharacter.wystepowanie}
+          delay={1000}
+        />
+        <GuessBox
+          label='Bron'
+          correctData={character.bron}
+          inputData={inputCharacter.bron}
+          delay={1500}
+        />
+        <GuessBox
+          label='Zbroja'
+          correctData={character.zbroja}
+          inputData={inputCharacter.zbroja}
+          delay={2000}
+        />
+      </div>
+    </>
+  );
 };
