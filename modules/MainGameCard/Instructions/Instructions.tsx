@@ -26,15 +26,18 @@ export const Instructions = () => {
           correctData={correct.correctData}
           inputData={correct.inputData}
           label='Postac'
+          delay={0}
         />
         <GuessBox
           correctData={partial.correctData}
           inputData={partial.inputData}
+          delay={0}
           label='Przynaleznosc'
         />
         <GuessBox
           correctData={incorrect.correctData}
           inputData={incorrect.inputData}
+          delay={0}
           label='Wystepowanie'
         />
       </div>
