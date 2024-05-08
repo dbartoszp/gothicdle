@@ -23,7 +23,8 @@ const defaultGameState = {
   isCorrectlyGuessed: false,
 };
 
-const storedGameState = localStorage.getItem('gameState');
+// const storedGameState = localStorage.getItem('gameState');
+let storedGameState = JSON.stringify(defaultGameState);
 
 type MainGameCardProps = {
   correctCharacterId: number;
@@ -31,6 +32,11 @@ type MainGameCardProps = {
 
 export const MainGameCard = ({ correctCharacterId }: MainGameCardProps) => {
   const correctCharacter = useGetCharacterById(correctCharacterId);
+
+  if (typeof window !== 'undefined') {
+    storedGameState =
+      localStorage.getItem('gameState') || JSON.stringify(defaultGameState);
+  }
 
   const [searchInput, setSearchInput] = useState('');
   const [gameState, setGameState] = useState(
