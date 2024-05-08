@@ -52,7 +52,7 @@ const handleCopyToClipboard = (rows: string[][]) => {
   const clipboardText =
     `Udalo mi sie zgadnac postac w #Gothicdle za ${rows.length} razem!\n` +
     formattedText +
-    `\n (tu bedzie link do stronki)`;
+    `\n gothicdle.vercel.app`;
 
   navigator.clipboard.writeText(clipboardText);
   toast.success('Skopiowano do schowka');
