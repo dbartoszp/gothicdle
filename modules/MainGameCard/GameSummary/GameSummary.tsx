@@ -71,7 +71,7 @@ export const GameSummary = ({
       <ErrorMessage message='Nie udalo sie wczytac podsumowania. Sprobuj ponownie pozniej!' />
     );
 
-  characters.data.slice().forEach((character) => {
+  characters.data.forEach((character) => {
     singleRow.push(compareData(correctCharacter.imie, character.imie));
     singleRow.push(
       compareData(correctCharacter.przynaleznosc, character.przynaleznosc)

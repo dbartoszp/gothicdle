@@ -113,7 +113,7 @@ export const MainGameCard = ({ correctCharacterId }: MainGameCardProps) => {
     <Card>
       {!gameState.isCorrectlyGuessed && (
         <div className='my-6 text-sm'>
-          <Text>Wprowadź postać do odgadnięcia!</Text>
+          <Text>Wprowadz postac do odgadniecia!</Text>
         </div>
       )}
 
