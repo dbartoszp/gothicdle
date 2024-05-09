@@ -52,7 +52,7 @@ const handleCopyToClipboard = (rows: string[][]) => {
   const clipboardText =
     `Udalo mi sie zgadnac postac w #Gothicdle za ${rows.length} razem!\n` +
     formattedText +
-    `\n gothicdle.com`;
+    `\n https://gothicdle.com`;
 
   navigator.clipboard.writeText(clipboardText);
   toast.success('Skopiowano do schowka');
