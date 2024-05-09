@@ -126,7 +126,7 @@ export const MainGameCard = ({ correctCharacterId }: MainGameCardProps) => {
       {showCongratulatoryMessage && (
         <div className='mb-6 mt-2 md:my-8'>
           <Text variant='subtitle'>
-            Gratulacje! Dzisiejsza postać to{' '}
+            Gratulacje! Dzisiejsza postac to{' '}
             <span className='text-green-500'>{correctCharacter.data.imie}</span>
             !
           </Text>
