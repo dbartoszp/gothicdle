@@ -31,6 +31,7 @@ export const TitleHeader = () => {
     <div className='mb-4 mt-6 flex flex-col space-y-4 text-center md:mb-2 md:mt-16'>
       <Text variant='title'>Gothicdle</Text>
       <Text variant='danger'>Kolejna postac za: {timeRemaining}</Text>
+      <Text variant='danger'>(00:00 CET)</Text>
     </div>
   );
 };

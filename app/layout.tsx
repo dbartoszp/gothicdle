@@ -15,7 +15,7 @@ const gothicFont = localFont({
 
 export const metadata: Metadata = {
   title: 'Gothicdle',
-  description: 'Gothicdle game',
+  description: 'Sprobuj odgadnac dzisiejsza postac w Gothicdle!',
 };
 
 export default function RootLayout({
