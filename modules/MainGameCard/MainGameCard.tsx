@@ -140,7 +140,18 @@ export const MainGameCard = ({ correctCharacterId }: MainGameCardProps) => {
       <div className='relative justify-center'>
         {showSearchbar && !gameState.isCorrectlyGuessed && (
           <>
-            <Searchbar onChange={handleInputChange} value={searchInput} />
+            <Searchbar
+              onChange={handleInputChange}
+              value={searchInput}
+              onSubmit={() => {
+                if (
+                  charactersAvailableToGuess &&
+                  charactersAvailableToGuess.length > 0
+                ) {
+                  handleMakeNewGuess(charactersAvailableToGuess[0].id);
+                }
+              }}
+            />
             <div className='absolute max-h-36 w-full overflow-y-auto border border-t-0 border-default-border md:max-h-72'>
               {searchInput &&
                 charactersAvailableToGuess?.map((character) => (
