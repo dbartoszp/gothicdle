@@ -145,6 +145,7 @@ export const MainGameCard = ({ correctCharacterId }: MainGameCardProps) => {
               value={searchInput}
               onSubmit={() => {
                 if (
+                  searchInput &&
                   charactersAvailableToGuess &&
                   charactersAvailableToGuess.length > 0
                 ) {
