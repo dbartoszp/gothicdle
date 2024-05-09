@@ -42,7 +42,7 @@ export const GuessBox: React.FC<GuessBoxProps> = ({
     'aspect-square md:w-40 md:h-40 w-32 h-32 border border-default-border flex items-center justify-center transition-opacity duration-500',
     {
       'bg-green-700': isInputDataCorrect || variant === 'correct',
-      'bg-orange-700':
+      'bg-orange-500':
         (haveCommonElements && !isInputDataCorrect) || variant === 'partial',
       'bg-red-700':
         (!isInputDataCorrect && !haveCommonElements) || variant === 'incorrect',
