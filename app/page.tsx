@@ -12,6 +12,7 @@ const ERROR_MSG =
   'Wystapil problem z ladowaniem gry. Sprobuj ponownie pozniej!';
 
 export default function Home() {
+  // const currentCorrectCharacter = useGetCurrentCorrectCharacter();
   const currentCorrectCharacter = useGetCurrentCorrectCharacterTesting();
 
   if (currentCorrectCharacter.isLoading) {

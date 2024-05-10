@@ -6,5 +6,6 @@ export const useGetCurrentCorrectCharacterTesting = () => {
     queryKey: ['currentCorrectCharacterTesting'],
     queryFn: () => getCurrentCorrectCharacterTesting(),
     refetchOnWindowFocus: true,
+    staleTime: Infinity,
   });
 };

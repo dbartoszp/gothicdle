@@ -1,4 +1,5 @@
 import { useGetMultipleCharactersByIds } from '@/modules/characters/hooks/useGetMultipleCharactersByIds/useGetMultipleCharactersByIds';
+import { useGetMultipleCharactersTestingByIds } from '@/modules/characters/testing/useGetMultipleCharactersTestingByIds/useGetMultipleCharactersTestingByIds';
 import { arraysHaveCommonItems } from '@/modules/characters/utils/arraysHaveCommonItems';
 import { arraysHaveSameItems } from '@/modules/characters/utils/arraysHaveSameItems';
 import { Button } from '@/modules/ui/Button/Button';
@@ -62,7 +63,8 @@ export const GameSummary = ({
   guesses,
   correctCharacter,
 }: GameSummaryProps) => {
-  const characters = useGetMultipleCharactersByIds(guesses);
+  // const characters = useGetMultipleCharactersByIds(guesses);
+  const characters = useGetMultipleCharactersTestingByIds(guesses);
   let allRows: string[][] = [];
   let singleRow: string[] = [];
 

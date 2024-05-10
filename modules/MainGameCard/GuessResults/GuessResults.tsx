@@ -2,6 +2,7 @@ import { useGetCharacterById } from '@/modules/characters/hooks/useGetCharacterB
 import { GuessBox } from '../GuessBox/GuessBox';
 import { ErrorMessage } from '@/modules/ui/ErrorMessage/ErrorMessage';
 import { GuessResultsSkeleton } from './GuessResultsSkeleton/GuessResultsSkeleton';
+import { useGetCharacterTestingById } from '@/modules/characters/testing/useGetCharacterTestingById/useGetCharacterById';
 
 type Character = {
   imie: string;
@@ -18,7 +19,8 @@ type ResultsProps = {
 };
 
 export const GuessResults = ({ character, inputCharacterId }: ResultsProps) => {
-  const inputCharacterData = useGetCharacterById(inputCharacterId);
+  // const inputCharacterData = useGetCharacterById(inputCharacterId);
+  const inputCharacterData = useGetCharacterTestingById(inputCharacterId);
   if (inputCharacterData.isLoading) return <GuessResultsSkeleton />;
   if (!inputCharacterData.isSuccess)
     return (

@@ -9,6 +9,8 @@ import { SearchResult } from './SearchResult/SearchResult';
 import Skeleton from 'react-loading-skeleton';
 import { ErrorMessage } from '../ui/ErrorMessage/ErrorMessage';
 import { GameSummary } from './GameSummary/GameSummary';
+import { useGetCharacterTestingById } from '../characters/testing/useGetCharacterTestingById/useGetCharacterById';
+import { useGetCharactersTestingByName } from '../characters/testing/useGetCharactersTestingByName/useGetCharactersTestingByName';
 
 const currentDate = new Date();
 const day = currentDate.getDate();
@@ -31,7 +33,8 @@ type MainGameCardProps = {
 };
 
 export const MainGameCard = ({ correctCharacterId }: MainGameCardProps) => {
-  const correctCharacter = useGetCharacterById(correctCharacterId);
+  // const correctCharacter = useGetCharacterById(correctCharacterId);
+  const correctCharacter = useGetCharacterTestingById(correctCharacterId);
 
   if (typeof window !== 'undefined') {
     storedGameState =
@@ -50,7 +53,8 @@ export const MainGameCard = ({ correctCharacterId }: MainGameCardProps) => {
   const [showCongratulatoryMessage, setShowCongratulatoryMessage] =
     useState(false);
 
-  const testGetCharactersByName = useGetCharactersByName(searchInput);
+  // const testGetCharactersByName = useGetCharactersByName(searchInput);
+  const testGetCharactersByName = useGetCharactersTestingByName(searchInput);
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
@@ -111,7 +115,10 @@ export const MainGameCard = ({ correctCharacterId }: MainGameCardProps) => {
   }
   if (!correctCharacter.isSuccess) {
     return (
-      <ErrorMessage message='Nastąpił problem z wczytywaniem gry. Spróbuj ponownie później!' />
+      <>
+        {correctCharacter.data?.id}
+        <ErrorMessage message='Nastapil problem z wczytywaniem gry. Sprobuj ponownie pozniej!' />
+      </>
     );
   }
 
