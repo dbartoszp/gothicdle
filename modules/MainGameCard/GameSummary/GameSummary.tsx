@@ -5,8 +5,11 @@ import { arraysHaveSameItems } from '@/modules/characters/utils/arraysHaveSameIt
 import { Button } from '@/modules/ui/Button/Button';
 import { ErrorMessage } from '@/modules/ui/ErrorMessage/ErrorMessage';
 import { Text } from '@/modules/ui/Text/Text';
+import Image from 'next/image';
 import toast from 'react-hot-toast';
 import { FaRegCopy } from 'react-icons/fa';
+
+const BEZI_PATH = '/imgs/bezi.png';
 
 type Character = {
   imie: string;
@@ -63,8 +66,8 @@ export const GameSummary = ({
   guesses,
   correctCharacter,
 }: GameSummaryProps) => {
-  // const characters = useGetMultipleCharactersByIds(guesses);
-  const characters = useGetMultipleCharactersTestingByIds(guesses);
+  const characters = useGetMultipleCharactersByIds(guesses);
+  // const characters = useGetMultipleCharactersTestingByIds(guesses);
   let allRows: string[][] = [];
   let singleRow: string[] = [];
 
@@ -91,7 +94,13 @@ export const GameSummary = ({
   const last3rows = allRows.slice(allRows.length - 3, allRows.length);
 
   return (
-    <div className='mb-4 mt-8 flex flex-col space-y-4'>
+    <div className='mb-4 mt-8 flex flex-col items-center space-y-4'>
+      <Image
+        src={BEZI_PATH}
+        width={150}
+        height={150}
+        alt='usmiechniety bezimienny'
+      />
       <Text>
         Udalo ci sie zgadnac postac w #Gothicdle za {allRows.length} razem!
       </Text>
