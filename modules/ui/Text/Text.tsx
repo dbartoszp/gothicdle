@@ -11,12 +11,14 @@ type ClassNames = {
 };
 
 const variants: ClassNames = {
-	small: 'text-3xs',
+	small: 'text-xs',
 	default: 'text-sm',
 	title: 'text-5xl md:text-7xl tracking-widest',
 	subtitle: 'text-xl  tracking-wide',
 	danger: 'text-md text-red-500',
+	dangerSm: 'text-xs text-red-500',
 	green: 'text-md text-green-500',
+	greenSm: 'text-xs text-green-500',
 };
 
 export const Text = (props: TextProps) => {
