@@ -5,48 +5,23 @@ import { Card } from '../ui/Card/Card';
 import { Text } from '../ui/Text/Text';
 import Skeleton from 'react-loading-skeleton';
 import { ErrorMessage } from '../ui/ErrorMessage/ErrorMessage';
-import { useGetCharacterTestingById } from '../characters/testing/useGetCharacterTestingById/useGetCharacterTestingById';
-import { useGetCharactersTestingByName } from '../characters/testing/useGetCharactersTestingByName/useGetCharactersTestingByName';
-import { useGetCurrentCorrectCharacterTesting } from '../characters/testing/useGetCurrentCorrectCharacterTesting/useGetCurrentCharacterTesting';
-import { useGetCurrentCorrectCharacter } from '../characters/hooks/useGetCurrentCorrectCharacter/useGetCurrentCorrectCharacter';
 import { GameSummary } from '../MainGameCard/GameSummary/GameSummary';
 import { Searchbar } from '../MainGameCard/Searchbar/Searchbar';
 import { SearchResult } from '../MainGameCard/SearchResult/SearchResult';
 import { GuessResults } from '../MainGameCard/GuessResults/GuessResults';
 import { Button } from '../ui/Button/Button';
 import { useGetAllCharactersClassic } from '../characters/hooks/useGetAllCharactersClassic/useGetAllCharacters';
-import { getAllCharactersClassic } from '../characters/hooks/useGetAllCharactersClassic/apiUseGetAllCharactersClassic';
-import { usePathname } from 'next/navigation';
-
-// const currentDate = new Date();
-// const day = currentDate.getDate();
-// const month = currentDate.getMonth() + 1;
-// const year = currentDate.getFullYear();
-
-// const formattedDate = `${day}-${month}-${year}`;
 
 const defaultGameState = {
-  //   charactersGuessed: 0,
-  guesses: [],
+  guesses: [] as number[],
   isCorrectlyGuessed: false,
 };
 
 const CHARACTERS_COUNT = 121;
 
-let storedGameState = JSON.stringify(defaultGameState);
-
 export const EndlessGameCard = () => {
-  if (typeof window !== 'undefined') {
-    storedGameState =
-      localStorage.getItem('gameStateEndless') ||
-      JSON.stringify(defaultGameState);
-  }
-
-  const pathName = usePathname();
   const [searchInput, setSearchInput] = useState('');
-  const [gameState, setGameState] = useState(
-    storedGameState ? JSON.parse(storedGameState) : defaultGameState
-  );
+  const [gameState, setGameState] = useState(defaultGameState);
   const [correctCharacterIndex, setCorrectCharacterIndex] = useState(
     Math.floor(Math.random() * (CHARACTERS_COUNT + 1))
   );
@@ -67,14 +42,24 @@ export const EndlessGameCard = () => {
     }
   }, [gameState.isCorrectlyGuessed]);
 
-  useEffect(() => {
-    console.log(`Route changed to: ${pathName}`);
-    localStorage.removeItem('gameStateEndless');
-  }, [pathName]);
-
   if (!allCharactersClassic.isSuccess) {
     return (
       <ErrorMessage message='Nastapil problem z wczytywaniem postaci. Sprobuj ponownie pozniej!' />
+    );
+  }
+
+  if (allCharactersClassic.isLoading) {
+    return (
+      <Card>
+        <Skeleton width={300} height={100} />
+      </Card>
+    );
+  }
+  if (!allCharactersClassic.isSuccess) {
+    return (
+      <>
+        <ErrorMessage message='Nastapil problem z wczytywaniem gry. Sprobuj ponownie pozniej!' />
+      </>
     );
   }
 
@@ -99,13 +84,6 @@ export const EndlessGameCard = () => {
         ...gameState,
         guesses: [...gameState.guesses, guessId],
       });
-      localStorage.setItem(
-        'gameStateEndless',
-        JSON.stringify({
-          ...gameState,
-          guesses: [...gameState.guesses, guessId],
-        })
-      );
       if (guessId === allCharactersClassic.data[correctCharacterIndex].id) {
         setShowSearchbar(false);
         setGameState({
@@ -113,14 +91,6 @@ export const EndlessGameCard = () => {
           guesses: [...gameState.guesses, guessId],
           isCorrectlyGuessed: true,
         });
-        localStorage.setItem(
-          'gameStateEndless',
-          JSON.stringify({
-            ...gameState,
-            guesses: [...gameState.guesses, guessId],
-            isCorrectlyGuessed: true,
-          })
-        );
       }
     }
   };
@@ -129,31 +99,15 @@ export const EndlessGameCard = () => {
     (character) => !gameState.guesses.includes(character.id)
   );
 
-  //   if (correctCharacter.isLoading) {
-  //     return (
-  //       <Card>
-  //         <Skeleton width={300} height={100} />
-  //       </Card>
-  //     );
-  //   }
-  //   if (!correctCharacter.isSuccess) {
-  //     return (
-  //       <>
-  //         <ErrorMessage message='Nastapil problem z wczytywaniem gry. Sprobuj ponownie pozniej!' />
-  //       </>
-  //     );
-  //   }
-
   return (
     <Card>
       {!gameState.isCorrectlyGuessed && (
         <div className='my-6 text-sm'>
           <Text>Wprowadz postac do odgadniecia!</Text>
-          {allCharactersClassic.data[correctCharacterIndex].imie}
         </div>
       )}
       {showCongratulatoryMessage && (
-        <div className='mb-6 mt-2 flex flex-col space-y-2 md:my-8'>
+        <div className='mb-6 mt-2 flex flex-col space-y-2 md:my-8 md:space-y-6'>
           <Text variant='subtitle'>
             Gratulacje! Szukana postac to{' '}
             <span className='text-green-500'>
@@ -161,9 +115,11 @@ export const EndlessGameCard = () => {
             </span>
             !
           </Text>
-          <Button size='sm' onClick={handleNextCharacter}>
-            Wylosuj kolejna postac
-          </Button>
+          <div>
+            <Button size='md' onClick={handleNextCharacter}>
+              Wylosuj kolejna postac
+            </Button>
+          </div>
           <GameSummary
             guesses={gameState.guesses}
             correctCharacter={allCharactersClassic.data[correctCharacterIndex]}

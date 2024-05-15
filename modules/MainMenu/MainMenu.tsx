@@ -4,7 +4,7 @@ import { Text } from '../ui/Text/Text';
 
 export const MainMenu = () => {
   return (
-    <div className='flex flex-col items-center space-y-12 pt-6 md:pt-12'>
+    <div className='flex flex-col items-center space-y-8 pt-6'>
       <Card>
         <div className='flex flex-col space-y-6 md:max-w-sm'>
           <Link size='md' href='/classic'>

@@ -8,6 +8,7 @@ import { Text } from '@/modules/ui/Text/Text';
 import Image from 'next/image';
 import toast from 'react-hot-toast';
 import { FaRegCopy } from 'react-icons/fa';
+import Skeleton from 'react-loading-skeleton';
 
 const BEZI_PATH = '/imgs/bezi.png';
 
@@ -75,7 +76,6 @@ export const GameSummary = ({
   isEndless = false,
 }: GameSummaryProps) => {
   const characters = useGetMultipleCharactersByIds(guesses);
-  // const characters = useGetMultipleCharactersTestingByIds(guesses);
   let allRows: string[][] = [];
   let singleRow: string[] = [];
 

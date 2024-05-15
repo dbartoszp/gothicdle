@@ -27,7 +27,7 @@ export const Timer = () => {
     return () => clearInterval(timer);
   }, []);
   return (
-    <div>
+    <div className='text-center'>
       <Text variant='danger'>Kolejna postac za: {timeRemaining}</Text>
       <Text variant='danger'>(00:00 CET)</Text>
     </div>
