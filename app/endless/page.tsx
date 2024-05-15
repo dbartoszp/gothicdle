@@ -1,17 +1,17 @@
 import { BugReport } from '@/modules/BugReport/BugReport';
+import { EndlessGameCard } from '@/modules/EndlessGameCard/EndlessGameCard';
+import { RouteChangeListener } from '@/modules/EndlessGameCard/RouteChangeListener';
 import { Instructions } from '@/modules/MainGameCard/Instructions/Instructions';
-import { MainGameCard } from '@/modules/MainGameCard/MainGameCard';
-import { Timer } from '@/modules/TitleHeader/Timer/Timer';
 import { TitleHeader } from '@/modules/TitleHeader/TitleHeader';
-import { Utilities } from '@/modules/Utilities/Utilities';
+import { GoBackButton } from '@/modules/ui/GoBackButton/GoBackButton';
 
-export default function Home() {
+export default function Endless() {
   return (
     <main className='flex min-h-screen flex-col items-center space-y-12 pt-2'>
-      <Utilities />
+      <RouteChangeListener />
+      <GoBackButton />
       <TitleHeader />
-      <Timer />
-      <MainGameCard />
+      <EndlessGameCard />
       <BugReport />
       <Instructions />
     </main>

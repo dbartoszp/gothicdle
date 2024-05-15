@@ -30,8 +30,6 @@ const defaultGameState = {
 let storedGameState = JSON.stringify(defaultGameState);
 
 export const MainGameCard = () => {
-  const [gamemode, setGamemode] = useState('classic');
-
   // const correctCharacter = useGetCurrentCorrectCharacterTesting();
   const correctCharacter = useGetCurrentCorrectCharacter();
 
