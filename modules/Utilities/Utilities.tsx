@@ -30,13 +30,12 @@ export const Utilities = () => {
           </Text>
         </div>
       </Modal>
-      <Link size='sm' href='https://buycoffee.to/dbartoszp'>
+      <Link size='sm' href='https://buycoffee.to/dbartoszp' targetBlank={true}>
         <div className='flex flex-row space-x-2'>
           <Text variant='small'>Wesprzyj studentow</Text>
           <GoLinkExternal size={15} />
         </div>
       </Link>
-    
     </div>
   );
 };

@@ -7,6 +7,7 @@ export const BugReport = () => {
     <Link
       size='sm'
       href='https://docs.google.com/spreadsheets/d/1n61Nrzr-HKY2JP35V4mF_JKpHAMyMvihZ8l0Rilm9cE/edit?usp=sharing'
+      targetBlank={true}
     >
       <div className='flex flex-row space-x-2'>
         <Text variant='small'>Zglos bledy w bazie danych</Text>
