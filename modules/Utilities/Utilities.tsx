@@ -10,7 +10,7 @@ export const Utilities = () => {
     <div className='flex flex-row space-x-4'>
       <Modal
         openVariant='primary'
-        title='11.05.2024'
+        title='15.05.2024'
         openText='Aktualnosci'
         onClose={close}
         open={isOpen}
@@ -18,10 +18,12 @@ export const Utilities = () => {
       >
         <div className='flex flex-col justify-center space-y-2'>
           <Text>Wysoki priorytet:</Text>
-          <Text variant='greenSm'>Nowy feature: dodanie trybu endless</Text>
+          <Text variant='greenSm'>
+            Nowy feature: dodanie innych wersji bazy danych do obu trybów gry
+          </Text>
           <Text variant='dangerSm'>
-            Naprawa bledu: po zgadnieciu postaci poprzedniego dnia, nastepnego
-            przez chwile widoczna jest poprawna postac na ten dzien
+            Naprawa bledu: przycisk ze zgloszeniem bledu zastawia niektore
+            postacie przy wyszukiwaniu ich
           </Text>
           <Text>Niski priorytet:</Text>
           <Text variant='dangerSm'>
@@ -30,13 +32,12 @@ export const Utilities = () => {
           </Text>
         </div>
       </Modal>
-      <Link size='sm' href='https://buycoffee.to/dbartoszp'>
+      <Link size='sm' href='https://buycoffee.to/dbartoszp' targetBlank={true}>
         <div className='flex flex-row space-x-2'>
           <Text variant='small'>Wesprzyj studentow</Text>
           <GoLinkExternal size={15} />
         </div>
       </Link>
-    
     </div>
   );
 };

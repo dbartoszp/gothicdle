@@ -7,6 +7,8 @@ import { SkeletonTheme } from 'react-loading-skeleton';
 import { Footer } from '@/modules/Footer/Footer';
 import { Toaster } from 'react-hot-toast';
 import { Analytics } from '@vercel/analytics/react';
+import { Utilities } from '@/modules/Utilities/Utilities';
+import { TitleHeader } from '@/modules/TitleHeader/TitleHeader';
 
 const gothicFont = localFont({
   src: [{ path: '../public/fonts/Gothic2Nacht.ttf', weight: '300' }],
