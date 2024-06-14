@@ -10,8 +10,8 @@ export default function Endless() {
       <GoBackButton />
       <TitleHeader />
       <EndlessGameCard />
-      <BugReport />
       <Instructions />
+      <BugReport />
     </main>
   );
 }

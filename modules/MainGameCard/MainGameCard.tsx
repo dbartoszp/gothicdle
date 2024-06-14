@@ -13,6 +13,7 @@ import { useGetCharacterTestingById } from '../characters/testing/useGetCharacte
 import { useGetCharactersTestingByName } from '../characters/testing/useGetCharactersTestingByName/useGetCharactersTestingByName';
 import { useGetCurrentCorrectCharacterTesting } from '../characters/testing/useGetCurrentCorrectCharacterTesting/useGetCurrentCharacterTesting';
 import { useGetCurrentCorrectCharacter } from '../characters/hooks/useGetCurrentCorrectCharacter/useGetCurrentCorrectCharacter';
+import { Tips } from './Tips/Tips';
 
 const currentDate = new Date();
 const day = currentDate.getDate();
@@ -121,9 +122,17 @@ export const MainGameCard = () => {
   return (
     <Card>
       {!gameState.isCorrectlyGuessed && (
-        <div className='my-6 text-sm'>
-          <Text>Wprowadz postac do odgadniecia!</Text>
-        </div>
+        <>
+          <div className='my-6 text-sm'>
+            <Text>Wprowadz postac do odgadniecia!</Text>
+          </div>
+          <div>
+            <Tips
+              guessesMadeCount={gameState.guesses.length}
+              correctCharacter={correctCharacter.data}
+            />
+          </div>
+        </>
       )}
 
       {showCongratulatoryMessage && (

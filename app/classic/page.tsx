@@ -12,8 +12,8 @@ export default function Classic() {
       <TitleHeader />
       <Timer />
       <MainGameCard />
-      <BugReport />
       <Instructions />
+      <BugReport />
     </main>
   );
 }

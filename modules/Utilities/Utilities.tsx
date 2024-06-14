@@ -10,7 +10,7 @@ export const Utilities = () => {
     <div className='flex flex-row space-x-4'>
       <Modal
         openVariant='primary'
-        title='15.05.2024'
+        title='14.06.2024'
         openText='Aktualnosci'
         onClose={close}
         open={isOpen}
@@ -20,10 +20,6 @@ export const Utilities = () => {
           <Text>Wysoki priorytet:</Text>
           <Text variant='greenSm'>
             Nowy feature: dodanie innych wersji bazy danych do obu trybów gry
-          </Text>
-          <Text variant='dangerSm'>
-            Naprawa bledu: przycisk ze zgloszeniem bledu zastawia niektore
-            postacie przy wyszukiwaniu ich
           </Text>
           <Text>Niski priorytet:</Text>
           <Text variant='dangerSm'>
