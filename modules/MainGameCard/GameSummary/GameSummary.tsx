@@ -18,7 +18,7 @@ type Character = {
   wystepowanie: string[];
   bron: string[];
   zbroja: string[];
-  zdjecie: string;
+  zdjecie: string | null;
 };
 
 type GameSummaryProps = {
