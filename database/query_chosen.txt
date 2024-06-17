@@ -95,7 +95,7 @@ INSERT INTO character(imie, przynaleznosc, wystepowanie, bron, zbroja) VALUES ('
 INSERT INTO character(imie, przynaleznosc, wystepowanie, bron, zbroja) VALUES ('Riordian', '{Mag wody}', '{Gothic, Gothic II: Noc Kruka, Gothic 3}', '{Magia, Kostur maga wody}', '{Szata maga wody, Szata wody}');
 INSERT INTO character(imie, przynaleznosc, wystepowanie, bron, zbroja) VALUES ('Ingmar', '{Paladyn}', '{Gothic II}', '{Miecz paladyna}', '{Pancerz paladyna}');
 INSERT INTO character(imie, przynaleznosc, wystepowanie, bron, zbroja) VALUES ('Serpentes', '{Mag ognia}', '{Gothic II}', '{brak}', '{Ciezka szata ognia}');
-INSERT INTO character(imie, przynaleznosc, wystepowanie, bron, zbroja) VALUES ('Moe', '{Obywatel}', '{Gothic II}', '{Laga}', '{brak}');
+INSERT INTO character(imie, przynaleznosc, wystepowanie, bron, zbroja) VALUES ('Moe', '{Obywatel}', '{Gothic II}', '{Laga}', '{Stroj obywatela}');
 INSERT INTO character(imie, przynaleznosc, wystepowanie, bron, zbroja) VALUES ('Mordrag', '{Szkodnik}', '{Gothic}', '{Dlugi luk, Cwiekowana maczuga}', '{Lekki stroj szkodnika}');
 INSERT INTO character(imie, przynaleznosc, wystepowanie, bron, zbroja) VALUES ('Milten', '{Mag ognia, Arcymag ognia}', '{Gothic, Gothic II, Gothic 3, Gothic 3: Zmierzch Bogow, ArcaniA}', '{Kula ognia, Okuty kostur}', '{Szata ognia, Szata maga ognia}');
 INSERT INTO character(imie, przynaleznosc, wystepowanie, bron, zbroja) VALUES ('Buster', '{Szkodnik, Najemnik}', '{Gothic, Gothic II}', '{Krotki luk, Kiepski tasak, luk, Cwiekowana maczuga}', '{Lekki pancerz najemnika, Ciezki stroj szkodnika}');

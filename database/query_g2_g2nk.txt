@@ -176,7 +176,7 @@ INSERT INTO character(imie, przynaleznosc, wystepowanie, bron, zbroja) VALUES ('
 INSERT INTO character(imie, przynaleznosc, wystepowanie, bron, zbroja) VALUES ('Jesper', '{Zlodziej}', '{Gothic II}', '{Kiepski miecz}', '{Stroj obywatela}');
 INSERT INTO character(imie, przynaleznosc, wystepowanie, bron, zbroja) VALUES ('Riordian', '{Mag wody}', '{Gothic, Gothic II: Noc Kruka, Gothic 3}', '{Magia, Kostur maga wody}', '{Szata maga wody, Szata wody}');
 INSERT INTO character(imie, przynaleznosc, wystepowanie, bron, zbroja) VALUES ('Borka', '{Obywatel}', '{Gothic II}', '{Laga}', '{Stroj obywatela}');
-INSERT INTO character(imie, przynaleznosc, wystepowanie, bron, zbroja) VALUES ('Moe', '{Obywatel}', '{Gothic II}', '{Laga}', '{brak}');
+INSERT INTO character(imie, przynaleznosc, wystepowanie, bron, zbroja) VALUES ('Moe', '{Obywatel}', '{Gothic II}', '{Laga}', '{Stroj obywatela}');
 INSERT INTO character(imie, przynaleznosc, wystepowanie, bron, zbroja) VALUES ('Opolos', '{Nowicjusz}', '{Gothic II}', '{Pika bojowa}', '{Szata nowicjusza}');
 INSERT INTO character(imie, przynaleznosc, wystepowanie, bron, zbroja) VALUES ('Juan', '{Bandyta}', '{Gothic II: Noc Kruka}', '{Kiepski topor bojowy}', '{Ciezki pancerz bandyty}');
 INSERT INTO character(imie, przynaleznosc, wystepowanie, bron, zbroja) VALUES ('Sedzia', '{Obywatel}', '{Gothic II}', '{brak}', '{Szata sedziego}');
