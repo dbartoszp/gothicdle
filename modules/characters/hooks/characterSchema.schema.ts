@@ -6,7 +6,7 @@ export const characterSchema = z.object({
   wystepowanie: z.array(z.string()),
   bron: z.array(z.string()),
   zbroja: z.array(z.string()),
-  zdjecie: z.string(),
+  zdjecie: z.string().nullable(),
   id: z.number(),
 });
 

@@ -17,7 +17,7 @@ const defaultGameState = {
   isCorrectlyGuessed: false,
 };
 
-const CHARACTERS_COUNT = 121;
+const CHARACTERS_COUNT = 124;
 
 export const EndlessGameCard = () => {
   const [searchInput, setSearchInput] = useState('');
