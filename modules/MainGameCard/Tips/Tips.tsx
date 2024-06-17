@@ -2,6 +2,7 @@ import { Text } from '@/modules/ui/Text/Text';
 import { GuessBox } from '../GuessBox/GuessBox';
 import { useEffect, useState } from 'react';
 import { Button } from '@/modules/ui/Button/Button';
+import { NameTips } from './NameTips/NameTips';
 
 type CorrectCharacter = {
   imie: string;
@@ -43,12 +44,12 @@ const defaultTipsState = {
   tipsShown: 0,
 };
 
-export const Tips = ({ guessesMadeCount, correctCharacter }: TipsProps) => {
-  let storedTipsState = JSON.stringify(defaultTipsState);
+let storedTipsState = JSON.stringify(defaultTipsState);
 
+export const Tips = ({ guessesMadeCount, correctCharacter }: TipsProps) => {
   if (typeof window !== 'undefined') {
     storedTipsState =
-      localStorage.getItem('tipsState') || JSON.stringify(storedTipsState);
+      localStorage.getItem('tipsState') || JSON.stringify(defaultTipsState);
   }
 
   const [tipsState, setTipsState] = useState(
@@ -58,7 +59,7 @@ export const Tips = ({ guessesMadeCount, correctCharacter }: TipsProps) => {
       : defaultTipsState
   );
 
-  const [showTips, setShowTips] = useState(false);
+  const [showTips, setShowTips] = useState(true);
 
   const handleShowTip = (tipKey: keyof TipsState) => {
     if (tipsState[tipKey as keyof TipsState]) {
@@ -87,20 +88,33 @@ export const Tips = ({ guessesMadeCount, correctCharacter }: TipsProps) => {
 
   return (
     <div className='my-2'>
-      <Button size='sm' onClick={() => setShowTips(!showTips)}>
+      {/* <Button size='sm' onClick={() => setShowTips(!showTips)}>
         {showTips ? 'Schowaj podpowiedzi' : 'Pokaz podpowiedzi'}
-      </Button>
+      </Button> */}
       {showTips && (
         <>
-          <div className='my-2 flex flex-col space-y-4'>
+          {/* <div className='my-2 flex flex-col space-y-4'>
             <Text>
               Kolejna podpowiedz za: {5 - (guessesMadeCount % 5)} niepoprawnych
               prób
             </Text>
-            <Text>Mozesz ujawnic {tipTokens} informacje o postaci</Text>
+            <Text>
+              Mozesz ujawnic {tipTokens}{' '}
+              {tipTokens === 0 ? 'informacji' : 'informacje'} o postaci
+            </Text>
+          </div> */}
+          <div>
+            <Text variant='small'>
+              Co 5 niepoprawnie odgadnietych postaci ujawniona zostanie jedna
+              litera imienia poprawnej postaci
+            </Text>
+            <NameTips
+              lettersUncovered={Math.floor(guessesMadeCount / 5)}
+              correctName={correctCharacter.imie}
+            />
           </div>
 
-          <div className='flex flex-col space-y-1 md:flex-row'>
+          {/* <div className='flex flex-col space-y-1 md:flex-row'>
             <Button
               size='sm'
               onClick={() => handleShowTip('usedAffiliationTip')}
@@ -155,7 +169,7 @@ export const Tips = ({ guessesMadeCount, correctCharacter }: TipsProps) => {
               }
               delay={0}
             />
-          </div>
+          </div> */}
         </>
       )}
     </div>

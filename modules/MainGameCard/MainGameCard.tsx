@@ -127,10 +127,10 @@ export const MainGameCard = () => {
             <Text>Wprowadz postac do odgadniecia!</Text>
           </div>
           <div>
-            <Tips
+            {/* <Tips
               guessesMadeCount={gameState.guesses.length}
               correctCharacter={correctCharacter.data}
-            />
+            /> */}
           </div>
         </>
       )}
