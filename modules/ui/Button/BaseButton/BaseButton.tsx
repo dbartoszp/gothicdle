@@ -57,11 +57,13 @@ export const BaseButton = (props: BaseButtonProps) => {
     rounded = false,
     targetBlank,
     rel,
+    disabled = false,
   } = props;
-  const className = clsx('transition-all duration-300', {
+  const className = clsx('transition-all duration-300 z-0', {
     [variants[variant]]: props.variant,
     [sizes[size]]: props.size,
     'rounded-xl': rounded,
+    'opacity-50 cursor-not-allowed': disabled,
   });
 
   if (props.as === 'a') {
