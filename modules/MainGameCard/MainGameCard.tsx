@@ -90,9 +90,9 @@ export const MainGameCard = () => {
     }
   };
 
-  const charactersAvailableToGuess = testGetCharactersByName?.data?.filter(
-    (character) => !gameState.guesses.includes(character.id)
-  );
+  const charactersAvailableToGuess = testGetCharactersByName?.data
+    ?.filter((character) => !gameState.guesses.includes(character.id))
+    ?.sort((a, b) => a.imie.localeCompare(b.imie));
 
   useEffect(() => {
     if (gameState.isCorrectlyGuessed) {
@@ -123,14 +123,14 @@ export const MainGameCard = () => {
     <Card>
       {!gameState.isCorrectlyGuessed && (
         <>
-          <div className='my-6 text-sm'>
-            <Text>Wprowadz postac do odgadniecia!</Text>
-          </div>
           <div>
-            {/* <Tips
+            <Tips
               guessesMadeCount={gameState.guesses.length}
               correctCharacter={correctCharacter.data}
-            /> */}
+            />
+          </div>
+          <div className='my-6 text-sm'>
+            <Text>Wprowadz postac do odgadniecia!</Text>
           </div>
         </>
       )}
