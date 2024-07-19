@@ -11,6 +11,7 @@ import { SearchResult } from '../MainGameCard/SearchResult/SearchResult';
 import { GuessResults } from '../MainGameCard/GuessResults/GuessResults';
 import { Button } from '../ui/Button/Button';
 import { useGetAllCharactersClassic } from '../characters/hooks/useGetAllCharactersClassic/useGetAllCharacters';
+import { Tips } from '../MainGameCard/Tips/Tips';
 
 const defaultGameState = {
   guesses: [] as number[],
@@ -95,16 +96,26 @@ export const EndlessGameCard = () => {
     }
   };
 
-  const charactersAvailableToGuess = getCharactersByName?.data?.filter(
-    (character) => !gameState.guesses.includes(character.id)
-  );
+  const charactersAvailableToGuess = getCharactersByName?.data
+    ?.filter((character) => !gameState.guesses.includes(character.id))
+    ?.sort((a, b) => a.imie.localeCompare(b.imie));
 
   return (
     <Card>
       {!gameState.isCorrectlyGuessed && (
-        <div className='my-6 text-sm'>
-          <Text>Wprowadz postac do odgadniecia!</Text>
-        </div>
+        <>
+          <div>
+            <Tips
+              guessesMadeCount={gameState.guesses.length}
+              correctCharacter={
+                allCharactersClassic.data[correctCharacterIndex]
+              }
+            />
+          </div>
+          <div className='my-6 text-sm'>
+            <Text>Wprowadz postac do odgadniecia!</Text>
+          </div>
+        </>
       )}
       {showCongratulatoryMessage && (
         <div className='mb-6 mt-2 flex flex-col space-y-2 md:my-8 md:space-y-6'>
