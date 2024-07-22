@@ -1,4 +1,5 @@
 import { useGetMultipleCharactersByIds } from '@/modules/characters/hooks/useGetMultipleCharactersByIds/useGetMultipleCharactersByIds';
+import { useGetMultipleCharactersByIdsAndDatabase } from '@/modules/characters/hooks/useGetMultipleCharactersByIdsAndDatabase/useGetMultipleCharactersByIdsAndDatabase';
 import { useGetMultipleCharactersTestingByIds } from '@/modules/characters/testing/useGetMultipleCharactersTestingByIds/useGetMultipleCharactersTestingByIds';
 import { arraysHaveCommonItems } from '@/modules/characters/utils/arraysHaveCommonItems';
 import { arraysHaveSameItems } from '@/modules/characters/utils/arraysHaveSameItems';
@@ -25,6 +26,7 @@ type GameSummaryProps = {
   guesses: number[];
   correctCharacter: Character;
   isEndless?: boolean;
+  database: string;
 };
 
 const compareData = (
@@ -74,8 +76,12 @@ export const GameSummary = ({
   guesses,
   correctCharacter,
   isEndless = false,
+  database,
 }: GameSummaryProps) => {
-  const characters = useGetMultipleCharactersByIds(guesses);
+  const characters = useGetMultipleCharactersByIdsAndDatabase({
+    ids: guesses,
+    database,
+  });
   let allRows: string[][] = [];
   let singleRow: string[] = [];
 
