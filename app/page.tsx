@@ -1,3 +1,4 @@
+import { BugReport } from '@/modules/BugReport/BugReport';
 import { Instructions } from '@/modules/MainGameCard/Instructions/Instructions';
 import { MainMenu } from '@/modules/MainMenu/MainMenu';
 import { Maintenance } from '@/modules/Maintenance/Maintenance';
@@ -8,12 +9,13 @@ import { Utilities } from '@/modules/Utilities/Utilities';
 export default function Home() {
   return (
     <main className='flex min-h-screen flex-col items-center space-y-8 pt-2 md:space-y-12'>
-      <Maintenance />
-      {/* <Utilities />
+      {/* <Maintenance /> */}
+      <Utilities />
       <TitleHeader />
       <Timer />
       <MainMenu />
-      <Instructions /> */}
+      <BugReport />
+      <Instructions />
     </main>
   );
 }
