@@ -8,12 +8,12 @@ import { GoBackButton } from '@/modules/ui/GoBackButton/GoBackButton';
 export default function Endless() {
   return (
     <main className='flex min-h-screen flex-col items-center space-y-12 pt-2'>
-      <Maintenance />
-      {/* <GoBackButton />
+      {/* <Maintenance /> */}
+      <GoBackButton />
       <TitleHeader />
       <EndlessGameCard />
       <Instructions />
-      <BugReport /> */}
+      <BugReport />
     </main>
   );
 }

@@ -21,6 +21,10 @@ export const Utilities = () => {
           <Text variant='greenSm'>
             Dodane zostaly inne wersje bazy danych do obu trybow gry
           </Text>
+          <Text>Wysoki priorytet:</Text>
+          <Text variant='greenSm'>
+            Naprawa bledu: pierwsza postac w trybie endless jest zawsze ta sama
+          </Text>
           <Text>Niski priorytet:</Text>
           <Text variant='dangerSm'>
             Naprawa bledu: po zgadnieciu postaci, zmiana karty sprawia, ze
