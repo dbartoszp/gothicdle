@@ -85,7 +85,7 @@ export const GameSummary = ({
   let allRows: string[][] = [];
   let singleRow: string[] = [];
 
-  if (!characters.isSuccess)
+  if (!characters.isSuccess || !correctCharacter.imie)
     return (
       <ErrorMessage message='Nie udalo sie wczytac podsumowania. Sprobuj ponownie pozniej!' />
     );

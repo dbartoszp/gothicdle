@@ -11,7 +11,6 @@ export const getMultipleCharactersByIdsAndDatabase = async ({
   database,
 }: getMultipleCharactersByIdsAndDatabase) => {
   const supabase = createClientComponentClient();
-  console.log(database, ids);
   const { data } = await supabase
     .from(`character${database}`)
     .select('*')

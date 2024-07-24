@@ -6,18 +6,14 @@ export const getCurrentCorrectCharacterByDatabase = async (
   database: string
 ) => {
   const supabase = createClientComponentClient();
-  console.log(`currentCorrectCharacter${database}`);
 
   const { data } = await supabase
     .from(`currentCorrectCharacter${database}`)
     .select('characterId')
     .single();
 
-  console.log(database);
-
   const characterId = characterIdSchema.safeParse(data);
   if (characterId.success) {
-    console.log(`character${database}`);
     const { data: characterData } = await supabase
       .from(`character${database}`)
       .select('*')

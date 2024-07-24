@@ -14,6 +14,9 @@ import { useGetAllCharactersClassic } from '../characters/hooks/useGetAllCharact
 import { Tips } from '../MainGameCard/Tips/Tips';
 import { useSearchParams } from 'next/navigation';
 import { capitalizeFirstLetterOfWord } from '../characters/utils/capitalizeFirstLetterOfWord';
+import { useGetCharactersByDatabaseAndName } from '../characters/hooks/useGetCharactersByDatabaseAndName/useGetCharactersByDatabaseAndName';
+import { DatabaseSelect } from '../DatabaseSelect/DatabaseSelect';
+import { useGetAllCharactersByDatabase } from '../characters/hooks/useGetAllCharactersByDatabase/useGetAllCharactersByDatabase';
 
 const defaultGameState = {
   guesses: [] as number[],
@@ -27,18 +30,23 @@ export const EndlessGameCard = () => {
   const searchParam = capitalizeFirstLetterOfWord(
     searchParams.get('database') || 'wybrane'
   );
-
   const [searchInput, setSearchInput] = useState('');
+
+  const getCharactersByName = useGetCharactersByDatabaseAndName({
+    name: searchInput,
+    database: searchParam,
+  });
+
+  const allCharactersByDatabase = useGetAllCharactersByDatabase(searchParam);
+
   const [gameState, setGameState] = useState(defaultGameState);
   const [correctCharacterIndex, setCorrectCharacterIndex] = useState(
-    Math.floor(Math.random() * (CHARACTERS_COUNT + 1))
+    Math.floor(Math.random() * (getCharactersByName.data?.length || 0))
   );
+
   const [showSearchbar, setShowSearchbar] = useState(true);
   const [showCongratulatoryMessage, setShowCongratulatoryMessage] =
     useState(false);
-
-  const getCharactersByName = useGetCharactersByName(searchInput);
-  const allCharactersClassic = useGetAllCharactersClassic();
 
   useEffect(() => {
     if (gameState.isCorrectlyGuessed) {
@@ -50,20 +58,15 @@ export const EndlessGameCard = () => {
     }
   }, [gameState.isCorrectlyGuessed]);
 
-  if (!allCharactersClassic.isSuccess) {
-    return (
-      <ErrorMessage message='Nastapil problem z wczytywaniem postaci. Sprobuj ponownie pozniej!' />
-    );
-  }
-
-  if (allCharactersClassic.isLoading) {
+  if (allCharactersByDatabase.isLoading) {
     return (
       <Card>
         <Skeleton width={300} height={100} />
       </Card>
     );
   }
-  if (!allCharactersClassic.isSuccess) {
+
+  if (!allCharactersByDatabase.isSuccess) {
     return (
       <>
         <ErrorMessage message='Nastapil problem z wczytywaniem gry. Sprobuj ponownie pozniej!' />
@@ -81,18 +84,18 @@ export const EndlessGameCard = () => {
     setShowSearchbar(true);
     setGameState(defaultGameState);
     setCorrectCharacterIndex(
-      Math.floor(Math.random() * (CHARACTERS_COUNT + 1))
+      Math.floor(Math.random() * (getCharactersByName.data?.length || 0))
     );
   };
 
   const handleMakeNewGuess = (guessId: number) => {
-    if (allCharactersClassic.data) {
+    if (allCharactersByDatabase.data) {
       setSearchInput('');
       setGameState({
         ...gameState,
         guesses: [...gameState.guesses, guessId],
       });
-      if (guessId === allCharactersClassic.data[correctCharacterIndex].id) {
+      if (guessId === allCharactersByDatabase.data[correctCharacterIndex].id) {
         setShowSearchbar(false);
         setGameState({
           ...gameState,
@@ -107,15 +110,32 @@ export const EndlessGameCard = () => {
     ?.filter((character) => !gameState.guesses.includes(character.id))
     ?.sort((a, b) => a.imie.localeCompare(b.imie));
 
+  if (allCharactersByDatabase.isLoading) {
+    return (
+      <Card>
+        <Skeleton width={300} height={100} />
+      </Card>
+    );
+  }
+  if (!allCharactersByDatabase.isSuccess) {
+    return (
+      <>
+        <ErrorMessage message='Nastapil problem z wczytywaniem gry. Sprobuj ponownie pozniej!' />
+      </>
+    );
+  }
   return (
     <Card>
+      <DatabaseSelect isEndless={true} currentDatabase={searchParam} />
+      {getCharactersByName.data?.length}
+      {allCharactersByDatabase.data[correctCharacterIndex]?.imie}
       {!gameState.isCorrectlyGuessed && (
         <>
           <div>
             <Tips
               guessesMadeCount={gameState.guesses.length}
               correctCharacter={
-                allCharactersClassic.data[correctCharacterIndex]
+                allCharactersByDatabase.data[correctCharacterIndex]
               }
             />
           </div>
@@ -129,7 +149,7 @@ export const EndlessGameCard = () => {
           <Text variant='subtitle'>
             Gratulacje! Szukana postac to{' '}
             <span className='text-green-500'>
-              {allCharactersClassic.data[correctCharacterIndex].imie}
+              {allCharactersByDatabase.data[correctCharacterIndex]?.imie}
             </span>
             !
           </Text>
@@ -140,8 +160,11 @@ export const EndlessGameCard = () => {
           </div>
           <GameSummary
             guesses={gameState.guesses}
-            correctCharacter={allCharactersClassic.data[correctCharacterIndex]}
+            correctCharacter={
+              allCharactersByDatabase.data[correctCharacterIndex]
+            }
             isEndless={true}
+            database={searchParam}
           />
         </div>
       )}
@@ -177,7 +200,7 @@ export const EndlessGameCard = () => {
       </div>
 
       <div className='mt-4'>
-        {allCharactersClassic.data[correctCharacterIndex] &&
+        {allCharactersByDatabase.data[correctCharacterIndex] &&
           gameState.guesses.length > 0 &&
           gameState.guesses
             .slice()
@@ -185,8 +208,9 @@ export const EndlessGameCard = () => {
             .map((id: number) => (
               <GuessResults
                 key={id}
-                character={allCharactersClassic.data[correctCharacterIndex]}
+                character={allCharactersByDatabase.data[correctCharacterIndex]}
                 inputCharacterId={id}
+                database={searchParam}
               />
             ))}
       </div>
