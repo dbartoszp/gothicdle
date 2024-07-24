@@ -123,8 +123,6 @@ export const EndlessGameCard = () => {
   return (
     <Card>
       <DatabaseSelect isEndless={true} currentDatabase={searchParam} />
-      {getCharactersByName.data?.length}
-      {allCharactersByDatabase.data[correctCharacterIndex]?.imie}
       {!gameState.isCorrectlyGuessed && (
         <>
           <div>
