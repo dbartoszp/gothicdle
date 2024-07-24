@@ -10,7 +10,7 @@ export const Utilities = () => {
     <div className='flex flex-row space-x-4'>
       <Modal
         openVariant='primary'
-        title='19.07.2024'
+        title='25.07.2024'
         openText='Aktualnosci'
         onClose={close}
         open={isOpen}
@@ -19,11 +19,7 @@ export const Utilities = () => {
         <div className='flex flex-col justify-center space-y-2'>
           <Text>Ostatnie zmiany:</Text>
           <Text variant='greenSm'>
-            Dodane zostaly podpowiedzi co 5 niepoprawnych prob
-          </Text>
-          <Text>Wysoki priorytet:</Text>
-          <Text variant='greenSm'>
-            Nowy feature: dodanie innych wersji bazy danych do obu trybów gry
+            Dodane zostaly inne wersje bazy danych do obu trybow gry
           </Text>
           <Text>Niski priorytet:</Text>
           <Text variant='dangerSm'>

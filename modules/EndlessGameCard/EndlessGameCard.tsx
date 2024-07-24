@@ -1,6 +1,5 @@
 'use client';
 import React, { useState, useEffect, ChangeEvent } from 'react';
-import { useGetCharactersByName } from '../characters/hooks/useGetCharactersByName/useGetCharactersByName';
 import { Card } from '../ui/Card/Card';
 import { Text } from '../ui/Text/Text';
 import Skeleton from 'react-loading-skeleton';
@@ -10,7 +9,6 @@ import { Searchbar } from '../MainGameCard/Searchbar/Searchbar';
 import { SearchResult } from '../MainGameCard/SearchResult/SearchResult';
 import { GuessResults } from '../MainGameCard/GuessResults/GuessResults';
 import { Button } from '../ui/Button/Button';
-import { useGetAllCharactersClassic } from '../characters/hooks/useGetAllCharactersClassic/useGetAllCharacters';
 import { Tips } from '../MainGameCard/Tips/Tips';
 import { useSearchParams } from 'next/navigation';
 import { capitalizeFirstLetterOfWord } from '../characters/utils/capitalizeFirstLetterOfWord';
@@ -22,8 +20,6 @@ const defaultGameState = {
   guesses: [] as number[],
   isCorrectlyGuessed: false,
 };
-
-const CHARACTERS_COUNT = 124;
 
 export const EndlessGameCard = () => {
   const searchParams = useSearchParams();

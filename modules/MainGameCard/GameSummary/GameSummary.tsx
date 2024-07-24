@@ -1,6 +1,4 @@
-import { useGetMultipleCharactersByIds } from '@/modules/characters/hooks/useGetMultipleCharactersByIds/useGetMultipleCharactersByIds';
 import { useGetMultipleCharactersByIdsAndDatabase } from '@/modules/characters/hooks/useGetMultipleCharactersByIdsAndDatabase/useGetMultipleCharactersByIdsAndDatabase';
-import { useGetMultipleCharactersTestingByIds } from '@/modules/characters/testing/useGetMultipleCharactersTestingByIds/useGetMultipleCharactersTestingByIds';
 import { arraysHaveCommonItems } from '@/modules/characters/utils/arraysHaveCommonItems';
 import { arraysHaveSameItems } from '@/modules/characters/utils/arraysHaveSameItems';
 import { Button } from '@/modules/ui/Button/Button';
@@ -9,7 +7,6 @@ import { Text } from '@/modules/ui/Text/Text';
 import Image from 'next/image';
 import toast from 'react-hot-toast';
 import { FaRegCopy } from 'react-icons/fa';
-import Skeleton from 'react-loading-skeleton';
 
 const BEZI_PATH = '/imgs/bezi.png';
 
