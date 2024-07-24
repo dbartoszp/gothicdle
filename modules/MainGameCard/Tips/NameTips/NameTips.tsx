@@ -7,8 +7,10 @@ type NameTipsProps = {
 };
 
 export const NameTips = ({ lettersUncovered, correctName }: NameTipsProps) => {
-  const uncoveredPart = correctName.slice(0, lettersUncovered);
-  const hiddenPart = 'X'.repeat(correctName.length - lettersUncovered);
+  const validLettersUncovered = Math.min(lettersUncovered, correctName.length);
+
+  const uncoveredPart = correctName.slice(0, validLettersUncovered);
+  const hiddenPart = 'X'.repeat(correctName.length - validLettersUncovered);
 
   return (
     <div>

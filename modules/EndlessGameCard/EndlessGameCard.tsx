@@ -12,6 +12,8 @@ import { GuessResults } from '../MainGameCard/GuessResults/GuessResults';
 import { Button } from '../ui/Button/Button';
 import { useGetAllCharactersClassic } from '../characters/hooks/useGetAllCharactersClassic/useGetAllCharacters';
 import { Tips } from '../MainGameCard/Tips/Tips';
+import { useSearchParams } from 'next/navigation';
+import { capitalizeFirstLetterOfWord } from '../characters/utils/capitalizeFirstLetterOfWord';
 
 const defaultGameState = {
   guesses: [] as number[],
@@ -21,6 +23,11 @@ const defaultGameState = {
 const CHARACTERS_COUNT = 124;
 
 export const EndlessGameCard = () => {
+  const searchParams = useSearchParams();
+  const searchParam = capitalizeFirstLetterOfWord(
+    searchParams.get('database') || 'wybrane'
+  );
+
   const [searchInput, setSearchInput] = useState('');
   const [gameState, setGameState] = useState(defaultGameState);
   const [correctCharacterIndex, setCorrectCharacterIndex] = useState(

@@ -144,7 +144,6 @@ export const MainGameCard = () => {
   return (
     <Card>
       <DatabaseSelect currentDatabase={searchParam} />
-
       {!gameState.isCorrectlyGuessed && (
         <>
           <div>

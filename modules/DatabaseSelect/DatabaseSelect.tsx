@@ -22,7 +22,7 @@ export const DatabaseSelect = ({
 }: DatabaseSelectProps) => {
   const { isOpen, close, changeOpenState } = useDisclosure();
   return (
-    <>
+    <div className='my-2'>
       <Modal
         openVariant='primary'
         title='Wybierz baze danych'
@@ -115,6 +115,6 @@ export const DatabaseSelect = ({
           </Text>
         </div>
       </Modal>
-    </>
+    </div>
   );
 };
