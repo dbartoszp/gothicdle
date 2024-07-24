@@ -22,7 +22,7 @@ export const DatabaseSelect = ({
   isEndless = false,
 }: DatabaseSelectProps) => {
   const { isOpen, close, changeOpenState } = useDisclosure();
-  const baseURL = `http://localhost:3000/${isEndless ? 'endless' : 'classic'}?database=`;
+  const baseURL = `https://www.gothicdle.com/${isEndless ? 'endless' : 'classic'}?database=`;
 
   return (
     <div className='my-2'>
