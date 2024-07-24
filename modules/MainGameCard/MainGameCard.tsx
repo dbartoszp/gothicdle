@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect, ChangeEvent } from 'react';
+import React, { useState, useEffect, ChangeEvent, Suspense } from 'react';
 import { Card } from '../ui/Card/Card';
 import { Text } from '../ui/Text/Text';
 import { GuessResults } from './GuessResults/GuessResults';
@@ -142,81 +142,85 @@ export const MainGameCard = () => {
   }
 
   return (
-    <Card>
-      <DatabaseSelect currentDatabase={searchParam} />
-      {!gameState.isCorrectlyGuessed && (
-        <>
-          <div>
-            <Tips
-              guessesMadeCount={gameState.guesses.length}
-              correctCharacter={correctCharacter.data}
-            />
-          </div>
-          <div className='my-6 text-sm'>
-            <Text>Wprowadz postac do odgadniecia!</Text>
-          </div>
-        </>
-      )}
-
-      {showCongratulatoryMessage && (
-        <div className='mb-6 mt-2 md:my-8'>
-          <Text variant='subtitle'>
-            Gratulacje! Dzisiejsza postac to{' '}
-            <span className='text-green-500'>{correctCharacter.data.imie}</span>
-            !
-          </Text>
-          <GameSummary
-            database={searchParam}
-            guesses={gameState.guesses}
-            correctCharacter={correctCharacter.data}
-          />
-        </div>
-      )}
-
-      <div className='relative justify-center'>
-        {showSearchbar && !gameState.isCorrectlyGuessed && (
+    <Suspense>
+      <Card>
+        <DatabaseSelect currentDatabase={searchParam} />
+        {!gameState.isCorrectlyGuessed && (
           <>
-            <Searchbar
-              onChange={handleInputChange}
-              value={searchInput}
-              onSubmit={() => {
-                if (
-                  searchInput &&
-                  charactersAvailableToGuess &&
-                  charactersAvailableToGuess.length > 0
-                ) {
-                  handleMakeNewGuess(charactersAvailableToGuess[0].id);
-                }
-              }}
-            />
-            <div className='absolute max-h-36 w-full overflow-y-auto border border-t-0 border-default-border md:max-h-72'>
-              {searchInput &&
-                charactersAvailableToGuess?.map((character) => (
-                  <SearchResult
-                    onClick={() => handleMakeNewGuess(character.id)}
-                    characterName={character.imie}
-                    key={character.imie}
-                  />
-                ))}
+            <div>
+              <Tips
+                guessesMadeCount={gameState.guesses.length}
+                correctCharacter={correctCharacter.data}
+              />
+            </div>
+            <div className='my-6 text-sm'>
+              <Text>Wprowadz postac do odgadniecia!</Text>
             </div>
           </>
         )}
-      </div>
 
-      <div className='mt-4'>
-        {gameState.guesses.length > 0 &&
-          gameState.guesses
-            .slice()
-            .reverse()
-            .map((id: number) => (
-              <GuessResults
-                key={id}
-                character={correctCharacter.data}
-                inputCharacterId={id}
-                database={searchParam}
+        {showCongratulatoryMessage && (
+          <div className='mb-6 mt-2 md:my-8'>
+            <Text variant='subtitle'>
+              Gratulacje! Dzisiejsza postac to{' '}
+              <span className='text-green-500'>
+                {correctCharacter.data.imie}
+              </span>
+              !
+            </Text>
+            <GameSummary
+              database={searchParam}
+              guesses={gameState.guesses}
+              correctCharacter={correctCharacter.data}
+            />
+          </div>
+        )}
+
+        <div className='relative justify-center'>
+          {showSearchbar && !gameState.isCorrectlyGuessed && (
+            <>
+              <Searchbar
+                onChange={handleInputChange}
+                value={searchInput}
+                onSubmit={() => {
+                  if (
+                    searchInput &&
+                    charactersAvailableToGuess &&
+                    charactersAvailableToGuess.length > 0
+                  ) {
+                    handleMakeNewGuess(charactersAvailableToGuess[0].id);
+                  }
+                }}
               />
-            ))}
-      </div>
-    </Card>
+              <div className='absolute max-h-36 w-full overflow-y-auto border border-t-0 border-default-border md:max-h-72'>
+                {searchInput &&
+                  charactersAvailableToGuess?.map((character) => (
+                    <SearchResult
+                      onClick={() => handleMakeNewGuess(character.id)}
+                      characterName={character.imie}
+                      key={character.imie}
+                    />
+                  ))}
+              </div>
+            </>
+          )}
+        </div>
+
+        <div className='mt-4'>
+          {gameState.guesses.length > 0 &&
+            gameState.guesses
+              .slice()
+              .reverse()
+              .map((id: number) => (
+                <GuessResults
+                  key={id}
+                  character={correctCharacter.data}
+                  inputCharacterId={id}
+                  database={searchParam}
+                />
+              ))}
+        </div>
+      </Card>
+    </Suspense>
   );
 };

@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect, ChangeEvent } from 'react';
+import React, { useState, useEffect, ChangeEvent, Suspense } from 'react';
 import { Card } from '../ui/Card/Card';
 import { Text } from '../ui/Text/Text';
 import Skeleton from 'react-loading-skeleton';
@@ -121,93 +121,103 @@ export const EndlessGameCard = () => {
     );
   }
   return (
-    <Card>
-      <DatabaseSelect isEndless={true} currentDatabase={searchParam} />
-      {!gameState.isCorrectlyGuessed && (
-        <>
-          <div>
-            <Tips
-              guessesMadeCount={gameState.guesses.length}
-              correctCharacter={
-                allCharactersByDatabase.data[correctCharacterIndex]
-              }
-            />
-          </div>
-          <div className='my-6 text-sm'>
-            <Text>Wprowadz postac do odgadniecia!</Text>
-          </div>
-        </>
-      )}
-      {showCongratulatoryMessage && (
-        <div className='mb-6 mt-2 flex flex-col space-y-2 md:my-8 md:space-y-6'>
-          <Text variant='subtitle'>
-            Gratulacje! Szukana postac to{' '}
-            <span className='text-green-500'>
-              {allCharactersByDatabase.data[correctCharacterIndex]?.imie}
-            </span>
-            !
+    <Suspense>
+      <Card>
+        <div>
+          <Text variant='dangerSm'>
+            Wystepuje znany blad: w trybie endless pierwsza postac jest zawsze
+            taka sama.
           </Text>
-          <div>
-            <Button size='md' onClick={handleNextCharacter}>
-              Wylosuj kolejna postac
-            </Button>
-          </div>
-          <GameSummary
-            guesses={gameState.guesses}
-            correctCharacter={
-              allCharactersByDatabase.data[correctCharacterIndex]
-            }
-            isEndless={true}
-            database={searchParam}
-          />
         </div>
-      )}
-
-      <div className='relative justify-center'>
-        {showSearchbar && !gameState.isCorrectlyGuessed && (
+        <DatabaseSelect isEndless={true} currentDatabase={searchParam} />
+        {!gameState.isCorrectlyGuessed && (
           <>
-            <Searchbar
-              onChange={handleInputChange}
-              value={searchInput}
-              onSubmit={() => {
-                if (
-                  searchInput &&
-                  charactersAvailableToGuess &&
-                  charactersAvailableToGuess.length > 0
-                ) {
-                  handleMakeNewGuess(charactersAvailableToGuess[0].id);
+            <div>
+              <Tips
+                guessesMadeCount={gameState.guesses.length}
+                correctCharacter={
+                  allCharactersByDatabase.data[correctCharacterIndex]
                 }
-              }}
-            />
-            <div className='absolute max-h-36 w-full overflow-y-auto border border-t-0 border-default-border md:max-h-72'>
-              {searchInput &&
-                charactersAvailableToGuess?.map((character) => (
-                  <SearchResult
-                    onClick={() => handleMakeNewGuess(character.id)}
-                    characterName={character.imie}
-                    key={character.imie}
-                  />
-                ))}
+              />
+            </div>
+            <div className='my-6 text-sm'>
+              <Text>Wprowadz postac do odgadniecia!</Text>
             </div>
           </>
         )}
-      </div>
+        {showCongratulatoryMessage && (
+          <div className='mb-6 mt-2 flex flex-col space-y-2 md:my-8 md:space-y-6'>
+            <Text variant='subtitle'>
+              Gratulacje! Szukana postac to{' '}
+              <span className='text-green-500'>
+                {allCharactersByDatabase.data[correctCharacterIndex]?.imie}
+              </span>
+              !
+            </Text>
+            <div>
+              <Button size='md' onClick={handleNextCharacter}>
+                Wylosuj kolejna postac
+              </Button>
+            </div>
+            <GameSummary
+              guesses={gameState.guesses}
+              correctCharacter={
+                allCharactersByDatabase.data[correctCharacterIndex]
+              }
+              isEndless={true}
+              database={searchParam}
+            />
+          </div>
+        )}
 
-      <div className='mt-4'>
-        {allCharactersByDatabase.data[correctCharacterIndex] &&
-          gameState.guesses.length > 0 &&
-          gameState.guesses
-            .slice()
-            .reverse()
-            .map((id: number) => (
-              <GuessResults
-                key={id}
-                character={allCharactersByDatabase.data[correctCharacterIndex]}
-                inputCharacterId={id}
-                database={searchParam}
+        <div className='relative justify-center'>
+          {showSearchbar && !gameState.isCorrectlyGuessed && (
+            <>
+              <Searchbar
+                onChange={handleInputChange}
+                value={searchInput}
+                onSubmit={() => {
+                  if (
+                    searchInput &&
+                    charactersAvailableToGuess &&
+                    charactersAvailableToGuess.length > 0
+                  ) {
+                    handleMakeNewGuess(charactersAvailableToGuess[0].id);
+                  }
+                }}
               />
-            ))}
-      </div>
-    </Card>
+              <div className='absolute max-h-36 w-full overflow-y-auto border border-t-0 border-default-border md:max-h-72'>
+                {searchInput &&
+                  charactersAvailableToGuess?.map((character) => (
+                    <SearchResult
+                      onClick={() => handleMakeNewGuess(character.id)}
+                      characterName={character.imie}
+                      key={character.imie}
+                    />
+                  ))}
+              </div>
+            </>
+          )}
+        </div>
+
+        <div className='mt-4'>
+          {allCharactersByDatabase.data[correctCharacterIndex] &&
+            gameState.guesses.length > 0 &&
+            gameState.guesses
+              .slice()
+              .reverse()
+              .map((id: number) => (
+                <GuessResults
+                  key={id}
+                  character={
+                    allCharactersByDatabase.data[correctCharacterIndex]
+                  }
+                  inputCharacterId={id}
+                  database={searchParam}
+                />
+              ))}
+        </div>
+      </Card>
+    </Suspense>
   );
 };
