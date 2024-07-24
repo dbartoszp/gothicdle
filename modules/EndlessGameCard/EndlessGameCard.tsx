@@ -123,6 +123,12 @@ export const EndlessGameCard = () => {
   return (
     <Suspense>
       <Card>
+        <div>
+          <Text variant='dangerSm'>
+            Wystepuje znany blad: w trybie endless pierwsza postac jest zawsze
+            taka sama.
+          </Text>
+        </div>
         <DatabaseSelect isEndless={true} currentDatabase={searchParam} />
         {!gameState.isCorrectlyGuessed && (
           <>
