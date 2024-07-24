@@ -1,6 +1,5 @@
 'use client';
 import React, { useState, useEffect, ChangeEvent } from 'react';
-import { useGetCharactersByName } from '../characters/hooks/useGetCharactersByName/useGetCharactersByName';
 import { Card } from '../ui/Card/Card';
 import { Text } from '../ui/Text/Text';
 import { GuessResults } from './GuessResults/GuessResults';
@@ -9,11 +8,12 @@ import { SearchResult } from './SearchResult/SearchResult';
 import Skeleton from 'react-loading-skeleton';
 import { ErrorMessage } from '../ui/ErrorMessage/ErrorMessage';
 import { GameSummary } from './GameSummary/GameSummary';
-import { useGetCharacterTestingById } from '../characters/testing/useGetCharacterTestingById/useGetCharacterTestingById';
-import { useGetCharactersTestingByName } from '../characters/testing/useGetCharactersTestingByName/useGetCharactersTestingByName';
-import { useGetCurrentCorrectCharacterTesting } from '../characters/testing/useGetCurrentCorrectCharacterTesting/useGetCurrentCharacterTesting';
-import { useGetCurrentCorrectCharacter } from '../characters/hooks/useGetCurrentCorrectCharacter/useGetCurrentCorrectCharacter';
 import { Tips } from './Tips/Tips';
+import { useSearchParams } from 'next/navigation';
+import { useGetCurrentCorrectCharacterByDatabase } from '../characters/hooks/useGetCurrentCorrectCharacterByDatabase/useGetCurrentCorrectCharacterByDatabase';
+import { useGetCharactersByDatabaseAndName } from '../characters/hooks/useGetCharactersByDatabaseAndName/useGetCharactersByDatabaseAndName';
+import { capitalizeFirstLetterOfWord } from '../characters/utils/capitalizeFirstLetterOfWord';
+import { DatabaseSelect } from '../DatabaseSelect/DatabaseSelect';
 
 const currentDate = new Date();
 const day = currentDate.getDate();
@@ -31,13 +31,24 @@ const defaultGameState = {
 let storedGameState = JSON.stringify(defaultGameState);
 
 export const MainGameCard = () => {
-  // const correctCharacter = useGetCurrentCorrectCharacterTesting();
-  const correctCharacter = useGetCurrentCorrectCharacter();
+  const searchParams = useSearchParams();
+  const searchParam = capitalizeFirstLetterOfWord(
+    searchParams.get('database') || 'wybrane'
+  );
 
-  if (typeof window !== 'undefined') {
-    storedGameState =
-      localStorage.getItem('gameState') || JSON.stringify(defaultGameState);
-  }
+  const correctCharacter = useGetCurrentCorrectCharacterByDatabase(
+    searchParam || 'Wybrane'
+  );
+
+  const getStoredGameState = (param: string) => {
+    if (typeof window !== 'undefined') {
+      return (
+        localStorage.getItem(`gameState${param}`) ||
+        JSON.stringify(defaultGameState)
+      );
+    }
+    return JSON.stringify(defaultGameState);
+  };
 
   const [searchInput, setSearchInput] = useState('');
   const [gameState, setGameState] = useState(
@@ -51,8 +62,10 @@ export const MainGameCard = () => {
   const [showCongratulatoryMessage, setShowCongratulatoryMessage] =
     useState(false);
 
-  const testGetCharactersByName = useGetCharactersByName(searchInput);
-  // const testGetCharactersByName = useGetCharactersTestingByName(searchInput);
+  const getCharactersByName = useGetCharactersByDatabaseAndName({
+    name: searchInput,
+    database: searchParam,
+  });
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
@@ -66,7 +79,7 @@ export const MainGameCard = () => {
       guesses: [...gameState.guesses, guessId],
     });
     localStorage.setItem(
-      'gameState',
+      `gameState${searchParam}`,
       JSON.stringify({
         ...gameState,
         guesses: [...gameState.guesses, guessId],
@@ -80,7 +93,7 @@ export const MainGameCard = () => {
         isCorrectlyGuessed: true,
       });
       localStorage.setItem(
-        'gameState',
+        `gameState${searchParam}`,
         JSON.stringify({
           ...gameState,
           guesses: [...gameState.guesses, guessId],
@@ -90,7 +103,7 @@ export const MainGameCard = () => {
     }
   };
 
-  const charactersAvailableToGuess = testGetCharactersByName?.data
+  const charactersAvailableToGuess = getCharactersByName?.data
     ?.filter((character) => !gameState.guesses.includes(character.id))
     ?.sort((a, b) => a.imie.localeCompare(b.imie));
 
@@ -104,6 +117,15 @@ export const MainGameCard = () => {
     }
   }, [gameState.isCorrectlyGuessed]);
 
+  useEffect(() => {
+    setGameState(
+      getStoredGameState(searchParam) &&
+        JSON.parse(getStoredGameState(searchParam)).date ===
+          defaultGameState.date
+        ? JSON.parse(getStoredGameState(searchParam))
+        : defaultGameState
+    );
+  }, [searchParam]);
   if (correctCharacter.isLoading) {
     return (
       <Card>
@@ -121,6 +143,7 @@ export const MainGameCard = () => {
 
   return (
     <Card>
+      <DatabaseSelect currentDatabase={searchParam} />
       {!gameState.isCorrectlyGuessed && (
         <>
           <div>
@@ -143,6 +166,7 @@ export const MainGameCard = () => {
             !
           </Text>
           <GameSummary
+            database={searchParam}
             guesses={gameState.guesses}
             correctCharacter={correctCharacter.data}
           />
@@ -189,6 +213,7 @@ export const MainGameCard = () => {
                 key={id}
                 character={correctCharacter.data}
                 inputCharacterId={id}
+                database={searchParam}
               />
             ))}
       </div>

@@ -1,5 +1,4 @@
-import { useGetMultipleCharactersByIds } from '@/modules/characters/hooks/useGetMultipleCharactersByIds/useGetMultipleCharactersByIds';
-import { useGetMultipleCharactersTestingByIds } from '@/modules/characters/testing/useGetMultipleCharactersTestingByIds/useGetMultipleCharactersTestingByIds';
+import { useGetMultipleCharactersByIdsAndDatabase } from '@/modules/characters/hooks/useGetMultipleCharactersByIdsAndDatabase/useGetMultipleCharactersByIdsAndDatabase';
 import { arraysHaveCommonItems } from '@/modules/characters/utils/arraysHaveCommonItems';
 import { arraysHaveSameItems } from '@/modules/characters/utils/arraysHaveSameItems';
 import { Button } from '@/modules/ui/Button/Button';
@@ -8,7 +7,6 @@ import { Text } from '@/modules/ui/Text/Text';
 import Image from 'next/image';
 import toast from 'react-hot-toast';
 import { FaRegCopy } from 'react-icons/fa';
-import Skeleton from 'react-loading-skeleton';
 
 const BEZI_PATH = '/imgs/bezi.png';
 
@@ -25,6 +23,7 @@ type GameSummaryProps = {
   guesses: number[];
   correctCharacter: Character;
   isEndless?: boolean;
+  database: string;
 };
 
 const compareData = (
@@ -74,12 +73,16 @@ export const GameSummary = ({
   guesses,
   correctCharacter,
   isEndless = false,
+  database,
 }: GameSummaryProps) => {
-  const characters = useGetMultipleCharactersByIds(guesses);
+  const characters = useGetMultipleCharactersByIdsAndDatabase({
+    ids: guesses,
+    database,
+  });
   let allRows: string[][] = [];
   let singleRow: string[] = [];
 
-  if (!characters.isSuccess)
+  if (!characters.isSuccess || !correctCharacter.imie)
     return (
       <ErrorMessage message='Nie udalo sie wczytac podsumowania. Sprobuj ponownie pozniej!' />
     );

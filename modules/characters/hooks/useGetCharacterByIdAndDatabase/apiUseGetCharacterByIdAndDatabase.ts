@@ -1,11 +1,19 @@
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { characterSchema } from '../characterSchema.schema';
 
-export const getCharacterById = async (id: number) => {
+type getCharacterByIdAndDatabaseParams = {
+  id: number;
+  database: string;
+};
+
+export const getCharacterByIdAndDatabase = async ({
+  id,
+  database,
+}: getCharacterByIdAndDatabaseParams) => {
   const supabase = createClientComponentClient();
 
   const { data } = await supabase
-    .from('character')
+    .from(`character${database}`)
     .select('*')
     .eq('id', id)
     .single();

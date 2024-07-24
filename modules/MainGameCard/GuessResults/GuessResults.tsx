@@ -1,8 +1,7 @@
-import { useGetCharacterById } from '@/modules/characters/hooks/useGetCharacterById/useGetCharacterById';
 import { GuessBox } from '../GuessBox/GuessBox';
 import { ErrorMessage } from '@/modules/ui/ErrorMessage/ErrorMessage';
 import { GuessResultsSkeleton } from './GuessResultsSkeleton/GuessResultsSkeleton';
-import { useGetCharacterTestingById } from '@/modules/characters/testing/useGetCharacterTestingById/useGetCharacterTestingById';
+import { useGetCharacterByIdAndDatabase } from '@/modules/characters/hooks/useGetCharacterByIdAndDatabase/useGetCharacterByIdAndDatabase';
 
 type Character = {
   imie: string;
@@ -16,11 +15,18 @@ type Character = {
 type ResultsProps = {
   character: Character;
   inputCharacterId: number;
+  database: string;
 };
 
-export const GuessResults = ({ character, inputCharacterId }: ResultsProps) => {
-  const inputCharacterData = useGetCharacterById(inputCharacterId);
-  // const inputCharacterData = useGetCharacterTestingById(inputCharacterId);
+export const GuessResults = ({
+  character,
+  inputCharacterId,
+  database,
+}: ResultsProps) => {
+  const inputCharacterData = useGetCharacterByIdAndDatabase({
+    id: inputCharacterId,
+    database,
+  });
 
   if (inputCharacterData.isLoading) return <GuessResultsSkeleton />;
   if (!inputCharacterData.isSuccess)

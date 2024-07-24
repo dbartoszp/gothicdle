@@ -9,10 +9,8 @@ export const getCharacterTestingById = async (id: number) => {
     .select('*')
     .eq('id', id)
     .single();
-  console.log(data);
   const character = characterSchema.safeParse(data);
   if (character.success) {
-    console.log(character.data);
     return character.data;
   }
   throw character.error;
