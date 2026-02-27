@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { MAP_PATHS } from '../mapPaths/mapPaths';
 import { MapSelection } from './MapSelection/MapSelection';
 import { calculateExponentialScore } from '../utilities/calculateExponentialScore';
+import { Button } from '@/modules/ui/Button/Button';
 
 type Screenshot = {
   id: number;
@@ -69,7 +70,6 @@ export const InteractiveMap = ({
     const img = containerRef.current.querySelector('img') as HTMLImageElement;
     if (!img) return;
 
-    // sprawdzamy map_id: jeśli nie pasuje do aktualnie wybranej mapy -> score = 0
     const mapIdFromPath = Number(currentMap.match(/\/(\d+)_/)?[1]);
     let score = 0;
 
@@ -189,15 +189,14 @@ export const InteractiveMap = ({
             </div>
 
             {currentScreenshotIndex < screenshots.length - 1 ? (
-              <button
-                className='px-3 py-1 bg-green-600 rounded hover:bg-green-700'
+              <Button
                 onClick={handleNextRound}
               >
                 Next
-              </button>
+              </Button>
             ) : (
               <div className='mt-2 text-yellow-400 font-bold text-lg'>
-                🎉 Game over! Total score: {totalScore}
+                gg
               </div>
             )}
           </>

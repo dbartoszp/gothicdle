@@ -45,7 +45,7 @@ export default function GothicGuesserGameCard() {
       <InteractiveMap
         screenshots={data}
         currentScreenshotIndex={currentIndex}
-        onNextRound={goNext} // w razie gdyby lock-in system miał zmieniać rundę
+        onNextRound={goNext}
       />
     </Card>
   );
