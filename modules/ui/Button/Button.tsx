@@ -1,19 +1,19 @@
 import {
   BaseButton,
   ButtonVariantProps,
-} from "@/modules/ui/Button/BaseButton/BaseButton";
-import { forwardRef } from "react";
+} from '@/modules/ui/Button/BaseButton/BaseButton';
+import { forwardRef } from 'react';
 
-type ButtonProps = Omit<ButtonVariantProps, "as">;
+type ButtonProps = Omit<ButtonVariantProps, 'as'>;
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ variant = "primary", ...rest }, ref) => {
+  ({ variant = 'primary', ...rest }, ref) => {
     return (
-      <BaseButton {...{ ...rest, variant }} as="button">
+      <BaseButton {...{ ...rest, variant }} as='button'>
         {rest.children}
       </BaseButton>
     );
-  },
+  }
 );
 
-Button.displayName = "Button";
+Button.displayName = 'Button';

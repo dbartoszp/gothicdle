@@ -43,16 +43,13 @@ export const EndlessGameCard = () => {
   const [showSearchbar, setShowSearchbar] = useState(true);
   const [showCongratulatoryMessage, setShowCongratulatoryMessage] =
     useState(false);
-
   useEffect(() => {
-    if (gameState.isCorrectlyGuessed) {
-      const timeoutId = setTimeout(() => {
-        setShowCongratulatoryMessage(true);
-      }, 2500);
+    if (!allCharactersByDatabase.data?.length) return;
 
-      return () => clearTimeout(timeoutId);
-    }
-  }, [gameState.isCorrectlyGuessed]);
+    setCorrectCharacterIndex(
+      Math.floor(Math.random() * allCharactersByDatabase.data.length)
+    );
+  }, [allCharactersByDatabase.data]);
 
   if (allCharactersByDatabase.isLoading) {
     return (
@@ -80,7 +77,7 @@ export const EndlessGameCard = () => {
     setShowSearchbar(true);
     setGameState(defaultGameState);
     setCorrectCharacterIndex(
-      Math.floor(Math.random() * (getCharactersByName.data?.length || 0))
+      Math.floor(Math.random() * allCharactersByDatabase.data.length)
     );
   };
 
@@ -123,12 +120,12 @@ export const EndlessGameCard = () => {
   return (
     <Suspense>
       <Card>
-        <div>
+        {/* <div>
           <Text variant='dangerSm'>
             Wystepuje znany blad: w trybie endless pierwsza postac jest zawsze
             taka sama.
           </Text>
-        </div>
+        </div> */}
         <DatabaseSelect isEndless={true} currentDatabase={searchParam} />
         {!gameState.isCorrectlyGuessed && (
           <>

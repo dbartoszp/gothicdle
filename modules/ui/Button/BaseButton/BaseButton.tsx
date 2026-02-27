@@ -12,6 +12,7 @@ type BaseProps = {
   rounded?: boolean;
   targetBlank?: boolean;
   rel?: string;
+  width?: string;
 };
 
 export type LinkVariantProps = {
@@ -43,7 +44,7 @@ const sizes: Sizes = {
 const variants: ClassNames = {
   primary:
     'bg-neutral-950 opacity-80 border border-default-border hover:bg-neutral-800',
-  green: 'bg-green-700  enabled:hover:bg-green-600  ',
+  green: 'bg-green-700  enabled:hover:bg-green-600',
   danger:
     'bg-red-700 text-red-100 enabled:hover:bg-red-600  border border-red-50',
   link: 'bg-neutral-950 opacity-80 border border-default-border hover:bg-neutral-800',
@@ -58,13 +59,19 @@ export const BaseButton = (props: BaseButtonProps) => {
     targetBlank,
     rel,
     disabled = false,
+    width,
   } = props;
-  const className = clsx('transition-all duration-300 z-0', {
-    [variants[variant]]: props.variant,
-    [sizes[size]]: props.size,
-    'rounded-xl': rounded,
-    'opacity-50 cursor-not-allowed': disabled,
-  });
+
+  const className = clsx(
+    'transition-all duration-300 z-0',
+    {
+      [variants[variant]]: props.variant,
+      [sizes[size]]: props.size,
+      'rounded-xl': rounded,
+      'opacity-50 cursor-not-allowed': disabled,
+    },
+    width
+  );
 
   if (props.as === 'a') {
     return (

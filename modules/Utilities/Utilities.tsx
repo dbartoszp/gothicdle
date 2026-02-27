@@ -8,7 +8,7 @@ export const Utilities = () => {
   const { isOpen, close, changeOpenState } = useDisclosure();
   return (
     <div className='flex flex-row space-x-4'>
-      <Modal
+      {/* <Modal
         openVariant='primary'
         title='25.07.2024'
         openText='Aktualnosci'
@@ -31,7 +31,7 @@ export const Utilities = () => {
             wygenerowane podsumowanie zmienia kolejnosc
           </Text>
         </div>
-      </Modal>
+      </Modal> */}
       <Link size='sm' href='https://buycoffee.to/dbartoszp' targetBlank={true}>
         <div className='flex flex-row space-x-2'>
           <Text variant='small'>Wesprzyj studentow</Text>

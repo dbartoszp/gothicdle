@@ -11,7 +11,7 @@ export default function Home() {
     <main className='flex min-h-screen flex-col items-center space-y-8 pt-2 md:space-y-12'>
       {/* <Maintenance /> */}
       <Utilities />
-      <TitleHeader />
+      <TitleHeader title='Gothicdle' />
       <Timer />
       <MainMenu />
       <BugReport />
