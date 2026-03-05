@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import { Button } from '@/modules/ui/Button/Button';
+import { Text } from '@/modules/ui/Text/Text';
 
 type Screenshot = {
   id: number;
@@ -25,23 +26,26 @@ export const ScreenshotSection = ({
 
   return (
     <div className='flex flex-col items-center gap-4'>
+      <Text variant='subtitle'>Gdzie zostal wykonany ten screenshot?</Text>
       <div>
         <div className='mt-2 text-center text-sm'>
-          X: <span>{currentScreenshot.coordX}</span> | Y:{' '}
-          <span>{currentScreenshot.coordY}</span>
+          <Text>
+            X: {currentScreenshot.coordX}
+            Y: {currentScreenshot.coordY}
+          </Text>
         </div>
 
         <Image
           src={currentScreenshot.url}
           alt={`Screenshot ${currentScreenshot.id}`}
-          width={800}
-          height={800}
+          width={600}
+          height={600}
         />
       </div>
 
-      <Button size='md' onClick={onNext}>
+      {/* <Button size='md' onClick={onNext}>
         Next
-      </Button>
+      </Button> */}
     </div>
   );
 };

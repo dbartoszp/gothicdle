@@ -1,13 +1,13 @@
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
-export const getFirstThreeScreenshots = async () => {
+export const getScreenshots = async () => {
   const supabase = createClientComponentClient();
 
   const { data, error } = await supabase
     .from('screenshotTesting')
     .select('id, filename, coord_x, coord_y, map_id')
     .order('id', { ascending: true })
-    .limit(3);
+    .limit(5);
 
   if (error) {
     throw new Error(`Database error: ${error.message}`);
@@ -31,6 +31,7 @@ export const getFirstThreeScreenshots = async () => {
       url: publicUrlData.publicUrl,
       coordX: row.coord_x,
       coordY: row.coord_y,
+      map_id: row.map_id,
     };
   });
 

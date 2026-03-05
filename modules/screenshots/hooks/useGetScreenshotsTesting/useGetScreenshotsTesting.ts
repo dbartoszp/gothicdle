@@ -1,10 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
-import { getFirstThreeScreenshots } from './apiUseGetScreenshotsTesting';
+import { getScreenshots } from './apiUseGetScreenshotsTesting';
 
 export const useGetScreenshotsTesting = () => {
   const query = useQuery({
     queryKey: ['screenshots', 'firstThree'],
-    queryFn: getFirstThreeScreenshots,
+    queryFn: getScreenshots,
     refetchOnWindowFocus: false,
   });
 
