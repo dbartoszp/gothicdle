@@ -7,7 +7,7 @@ export const calculateExponentialScore = (
     naturalWidth * naturalWidth + naturalHeight * naturalHeight
   );
 
-  const A = 0.09 * diagonal;
+  const A = 0.1 * diagonal;
 
   const perfectRadius = 20;
 

@@ -3,7 +3,7 @@ import { getScreenshots } from './apiUseGetScreenshotsTesting';
 
 export const useGetScreenshotsTesting = () => {
   const query = useQuery({
-    queryKey: ['screenshots', 'firstThree'],
+    queryKey: ['screenshots'],
     queryFn: getScreenshots,
     refetchOnWindowFocus: false,
   });

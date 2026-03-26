@@ -1,15 +1,57 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card } from '../ui/Card/Card';
 import { InteractiveMap } from './InteractiveMap/InteractiveMap';
 import { ScreenshotSection } from './ScreenshotSection/ScreenshotSection';
 import { useGetScreenshotsTesting } from '@/modules/screenshots/hooks/useGetScreenshotsTesting/useGetScreenshotsTesting';
 import { Text } from '../ui/Text/Text';
+import { GothicguesserGameSummary } from './GothicguesserGameSummary/GothicguesserGameSummary';
+
+const currentDate = new Date();
+const day = currentDate.getDate();
+const month = currentDate.getMonth() + 1;
+const year = currentDate.getFullYear();
+
+const formattedDate = `${day}-${month}-${year}`;
+
+const defaultGameStateGothicGuesser = {
+  date: formattedDate,
+  guesses: [],
+  totalPoints: 0,
+  isCompleted: false,
+};
+let storedGameState = JSON.stringify(defaultGameStateGothicGuesser);
 
 export default function GothicGuesserGameCard() {
   const { data, isLoading, error } = useGetScreenshotsTesting();
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [gameState, setGameState] = useState(
+    storedGameState &&
+      JSON.parse(storedGameState).date === defaultGameStateGothicGuesser.date
+      ? JSON.parse(storedGameState)
+      : defaultGameStateGothicGuesser
+  );
+
+  const getStoredGameState = () => {
+    if (typeof window !== 'undefined') {
+      return (
+        localStorage.getItem(`gameStateGothicGuesser`) ||
+        JSON.stringify(defaultGameStateGothicGuesser)
+      );
+    }
+    return JSON.stringify(defaultGameStateGothicGuesser);
+  };
+
+  useEffect(() => {
+    setGameState(
+      getStoredGameState() &&
+        JSON.parse(getStoredGameState()).date ===
+          defaultGameStateGothicGuesser.date
+        ? JSON.parse(getStoredGameState())
+        : defaultGameStateGothicGuesser
+    );
+  }, []);
 
   if (isLoading) {
     return (
@@ -44,7 +86,23 @@ export default function GothicGuesserGameCard() {
 
   return (
     <Card type='flex-col' size='lg'>
-      <ScreenshotSection
+      {gameState.isCompleted ? (
+        <GothicguesserGameSummary />
+      ) : (
+        <>
+          <ScreenshotSection
+            screenshots={data}
+            currentIndex={currentIndex}
+            onNext={goNext}
+          />
+          <InteractiveMap
+            screenshots={data}
+            currentScreenshotIndex={currentIndex}
+            onNextRound={goNext}
+          />
+        </>
+      )}
+      {/* <ScreenshotSection
         screenshots={data}
         currentIndex={currentIndex}
         onNext={goNext}
@@ -53,7 +111,7 @@ export default function GothicGuesserGameCard() {
         screenshots={data}
         currentScreenshotIndex={currentIndex}
         onNextRound={goNext}
-      />
+      /> */}
     </Card>
   );
 }

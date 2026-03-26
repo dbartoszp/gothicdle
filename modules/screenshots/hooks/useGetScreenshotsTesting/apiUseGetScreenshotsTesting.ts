@@ -3,11 +3,29 @@ import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 export const getScreenshots = async () => {
   const supabase = createClientComponentClient();
 
+  const { data: currentData, error: currentError } = await supabase
+    .from('currentScreenshotsTesting')
+    .select('firstScreenshotId')
+    .single();
+
+  if (currentError) {
+    throw new Error(
+      `Failed to fetch currentScreenshotsTesting: ${currentError.message}`
+    );
+  }
+
+  if (!currentData?.firstScreenshotId) {
+    throw new Error('firstScreenshotId not found');
+  }
+
+  const firstId = currentData.firstScreenshotId;
+
   const { data, error } = await supabase
     .from('screenshotTesting')
     .select('id, filename, coord_x, coord_y, map_id')
-    .order('id', { ascending: true })
-    .limit(5);
+    .gte('id', firstId)
+    .lt('id', firstId + 5)
+    .order('id', { ascending: true });
 
   if (error) {
     throw new Error(`Database error: ${error.message}`);

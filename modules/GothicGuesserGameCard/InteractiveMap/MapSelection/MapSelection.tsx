@@ -1,7 +1,7 @@
 'use client';
 
 import { Button } from '@/modules/ui/Button/Button';
-import { MAPS } from '../../mapPaths/mapPaths';
+import { MAPS } from '../../utilities/mapPaths/mapPaths';
 import { useState } from 'react';
 import { Text } from '@/modules/ui/Text/Text';
 
