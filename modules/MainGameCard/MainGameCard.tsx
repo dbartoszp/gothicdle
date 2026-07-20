@@ -28,8 +28,6 @@ const defaultGameState = {
   isCorrectlyGuessed: false,
 };
 
-let storedGameState = JSON.stringify(defaultGameState);
-
 export const MainGameCard = () => {
   const searchParams = useSearchParams();
   const searchParam = capitalizeFirstLetterOfWord(
@@ -51,12 +49,7 @@ export const MainGameCard = () => {
   };
 
   const [searchInput, setSearchInput] = useState('');
-  const [gameState, setGameState] = useState(
-    storedGameState &&
-      JSON.parse(storedGameState).date === defaultGameState.date
-      ? JSON.parse(storedGameState)
-      : defaultGameState
-  );
+  const [gameState, setGameState] = useState(defaultGameState);
 
   const [showSearchbar, setShowSearchbar] = useState(true);
   const [showCongratulatoryMessage, setShowCongratulatoryMessage] =

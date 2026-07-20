@@ -54,7 +54,6 @@ const handleCopyToClipboard = (
 ) => {
   const formattedText = rows
     .map((singleRow) => singleRow.join(''))
-    .reverse()
     .join('\n');
 
   const clipboardText = isEndless
@@ -139,7 +138,7 @@ export const GameSummary = ({
         <div>
           <Button
             size='sm'
-            onClick={() => handleCopyToClipboard(isEndless, allRows.reverse())}
+            onClick={() => handleCopyToClipboard(isEndless, allRows)}
           >
             <FaRegCopy size={30} />
           </Button>

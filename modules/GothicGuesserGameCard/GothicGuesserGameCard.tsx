@@ -17,21 +17,15 @@ const formattedDate = `${day}-${month}-${year}`;
 
 const defaultGameStateGothicGuesser = {
   date: formattedDate,
-  guesses: [],
-  totalPoints: 0,
+  guesses: [] as number[],
+  totalScore: 0,
   isCompleted: false,
 };
-let storedGameState = JSON.stringify(defaultGameStateGothicGuesser);
 
 export default function GothicGuesserGameCard() {
   const { data, isLoading, error } = useGetScreenshotsTesting();
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [gameState, setGameState] = useState(
-    storedGameState &&
-      JSON.parse(storedGameState).date === defaultGameStateGothicGuesser.date
-      ? JSON.parse(storedGameState)
-      : defaultGameStateGothicGuesser
-  );
+  const [gameState, setGameState] = useState(defaultGameStateGothicGuesser);
 
   const getStoredGameState = () => {
     if (typeof window !== 'undefined') {
@@ -84,10 +78,14 @@ export default function GothicGuesserGameCard() {
     setCurrentIndex((prev) => (prev === data.length - 1 ? prev : prev + 1));
   };
 
+  const handleGameComplete = (guesses: number[], totalScore: number) => {
+    setGameState({ ...defaultGameStateGothicGuesser, guesses, totalScore, isCompleted: true });
+  };
+
   return (
     <Card type='flex-col' size='lg'>
       {gameState.isCompleted ? (
-        <GothicguesserGameSummary />
+        <GothicguesserGameSummary guesses={gameState.guesses} totalScore={gameState.totalScore} />
       ) : (
         <>
           <ScreenshotSection
@@ -99,19 +97,10 @@ export default function GothicGuesserGameCard() {
             screenshots={data}
             currentScreenshotIndex={currentIndex}
             onNextRound={goNext}
+            onGameComplete={handleGameComplete}
           />
         </>
       )}
-      {/* <ScreenshotSection
-        screenshots={data}
-        currentIndex={currentIndex}
-        onNext={goNext}
-      />
-      <InteractiveMap
-        screenshots={data}
-        currentScreenshotIndex={currentIndex}
-        onNextRound={goNext}
-      /> */}
     </Card>
   );
 }

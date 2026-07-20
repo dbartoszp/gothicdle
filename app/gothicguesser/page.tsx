@@ -2,6 +2,7 @@ import GothicGuesserGameCard from '@/modules/GothicGuesserGameCard/GothicGuesser
 import { Timer } from '@/modules/TitleHeader/Timer/Timer';
 import { TitleHeader } from '@/modules/TitleHeader/TitleHeader';
 import { Utilities } from '@/modules/Utilities/Utilities';
+import { GoBackButton } from '@/modules/ui/GoBackButton/GoBackButton';
 
 export default function Home() {
   return (
@@ -9,6 +10,7 @@ export default function Home() {
       <Utilities />
       <TitleHeader title='GothicGuesser - demo ' />
       <Timer />
+      <GoBackButton />
       <GothicGuesserGameCard />
     </main>
   );

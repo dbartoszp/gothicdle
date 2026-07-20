@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useRef, MouseEvent, useEffect } from 'react';
+import { useState, useRef, MouseEvent, useEffect, useCallback } from 'react';
+import * as Dialog from '@radix-ui/react-dialog';
 import Image from 'next/image';
 import { MapSelection } from './MapSelection/MapSelection';
 import { calculateExponentialScore } from '../utilities/calculateExponentialScore';
@@ -22,6 +23,7 @@ type InteractiveMapProps = {
   screenshots: Screenshot[];
   currentScreenshotIndex: number;
   onNextRound?: () => void;
+  onGameComplete?: (guesses: number[], totalScore: number) => void;
 };
 
 const currentDate = new Date();
@@ -37,42 +39,71 @@ const defaultGameStateGothicGuesser = {
   totalPoints: 0,
   isCompleted: false,
 };
-let storedGameState = JSON.stringify(defaultGameStateGothicGuesser);
+
+const MAP_DIMENSIONS: Record<string, { naturalWidth: number; naturalHeight: number }> =
+  Object.values(MAPS).flatMap((g) => g.maps).reduce((acc, m) => {
+    acc[m.path] = { naturalWidth: m.naturalWidth, naturalHeight: m.naturalHeight };
+    return acc;
+  }, {} as Record<string, { naturalWidth: number; naturalHeight: number }>);
 
 export const InteractiveMap = ({
   screenshots,
   currentScreenshotIndex,
   onNextRound,
+  onGameComplete,
 }: InteractiveMapProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [containerSize, setContainerSize] = useState<{ width: number; height: number } | null>(null);
 
   const [currentMap, setCurrentMap] = useState<string | null>(null);
   const [dotPos, setDotPos] = useState<{ x: number; y: number } | null>(null);
   const [locked, setLocked] = useState(false);
   const [totalScore, setTotalScore] = useState(0);
   const [previewScore, setPreviewScore] = useState<number | null>(null);
-  const [gameState, setGameState] = useState(
-    storedGameState &&
-      JSON.parse(storedGameState).date === defaultGameStateGothicGuesser.date
-      ? JSON.parse(storedGameState)
-      : defaultGameStateGothicGuesser
-  );
+  const [gameState, setGameState] = useState(defaultGameStateGothicGuesser);
   const [isCorrectMap, setIsCorrectMap] = useState(true);
+  const [scoreModalOpen, setScoreModalOpen] = useState(false);
+  const [lastScore, setLastScore] = useState(0);
 
   const currentScreenshot = screenshots[currentScreenshotIndex];
 
   useEffect(() => {
     setGameState(
       getStoredGameState() &&
-        JSON.parse(getStoredGameState()).date ===
-          defaultGameStateGothicGuesser.date
+        JSON.parse(getStoredGameState()).date === defaultGameStateGothicGuesser.date
         ? JSON.parse(getStoredGameState())
         : defaultGameStateGothicGuesser
     );
   }, []);
 
-  const calculateScoreForPosition = (pos: { x: number; y: number }) => {
-    if (!containerRef.current || !currentScreenshot || !currentMap) return 0;
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const observer = new ResizeObserver((entries) => {
+      const { width, height } = entries[0].contentRect;
+      setContainerSize({ width, height });
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  const getImageLayout = useCallback(() => {
+    if (!containerSize || !currentMap) return null;
+    const dims = MAP_DIMENSIONS[currentMap];
+    if (!dims) return null;
+
+    const scale = Math.min(
+      containerSize.width / dims.naturalWidth,
+      containerSize.height / dims.naturalHeight
+    );
+    const leftOffset = (containerSize.width - dims.naturalWidth * scale) / 2;
+    const topOffset = (containerSize.height - dims.naturalHeight * scale) / 2;
+
+    return { scale, leftOffset, topOffset, naturalWidth: dims.naturalWidth, naturalHeight: dims.naturalHeight };
+  }, [containerSize, currentMap]);
+
+  const calculateScoreForPosition = useCallback((pos: { x: number; y: number }) => {
+    if (!currentScreenshot || !currentMap) return 0;
 
     const mapIdFromPath = Number(currentMap.match(/\/(\d+)_/)?.[1]);
     if (mapIdFromPath !== currentScreenshot.map_id) {
@@ -80,19 +111,15 @@ export const InteractiveMap = ({
       return 0;
     }
 
-    const img = containerRef.current.querySelector('img') as HTMLImageElement;
-    if (!img) return 0;
+    const layout = getImageLayout();
+    if (!layout) return 0;
 
     const dx = pos.x - currentScreenshot.coordX;
     const dy = pos.y - currentScreenshot.coordY;
     const distance = Math.sqrt(dx * dx + dy * dy);
 
-    return calculateExponentialScore(
-      distance,
-      img.naturalWidth,
-      img.naturalHeight
-    );
-  };
+    return calculateExponentialScore(distance, layout.naturalWidth, layout.naturalHeight);
+  }, [currentScreenshot, currentMap, getImageLayout]);
 
   const getStoredGameState = () => {
     if (typeof window !== 'undefined') {
@@ -107,32 +134,23 @@ export const InteractiveMap = ({
   const handleClick = (e: MouseEvent<HTMLDivElement>) => {
     if (!containerRef.current || locked || !currentMap) return;
 
+    const layout = getImageLayout();
+    if (!layout) return;
+
     const rect = containerRef.current.getBoundingClientRect();
-    const img = containerRef.current.querySelector('img') as HTMLImageElement;
-    if (!img) return;
-
-    const scale = Math.min(
-      rect.width / img.naturalWidth,
-      rect.height / img.naturalHeight
-    );
-
-    const leftOffset = (rect.width - img.naturalWidth * scale) / 2;
-    const topOffset = (rect.height - img.naturalHeight * scale) / 2;
-
-    const xOnImage = (e.clientX - rect.left - leftOffset) / scale;
-    const yOnImage = (e.clientY - rect.top - topOffset) / scale;
+    const xOnImage = (e.clientX - rect.left - layout.leftOffset) / layout.scale;
+    const yOnImage = (e.clientY - rect.top - layout.topOffset) / layout.scale;
 
     if (
       xOnImage < 0 ||
       yOnImage < 0 ||
-      xOnImage > img.naturalWidth ||
-      yOnImage > img.naturalHeight
+      xOnImage > layout.naturalWidth ||
+      yOnImage > layout.naturalHeight
     ) {
       return;
     }
 
     const naturalPos = { x: xOnImage, y: yOnImage };
-
     setDotPos(naturalPos);
     setPreviewScore(calculateScoreForPosition(naturalPos));
   };
@@ -147,49 +165,32 @@ export const InteractiveMap = ({
   const handleLockIn = () => {
     if (!dotPos) return;
 
+    setIsCorrectMap(true);
     const score = calculateScoreForPosition(dotPos);
     const newTotalScore = totalScore + score;
+    const newGuesses = [...gameState.guesses, score];
 
     setTotalScore(newTotalScore);
-    setGameState({
-      ...gameState,
-      guesses: [...gameState.guesses, score],
-      totalScore: newTotalScore,
-    });
+    setGameState({ ...gameState, guesses: newGuesses, totalScore: newTotalScore });
     localStorage.setItem(
       `gameStateGothicGuesser`,
-      JSON.stringify({
-        ...gameState,
-        guesses: [...gameState.guesses, score],
-        totalScore: newTotalScore,
-      })
+      JSON.stringify({ ...gameState, guesses: newGuesses, totalScore: newTotalScore })
     );
 
-    //!! TUTAJ KONIEC GRY
     if (currentScreenshotIndex === screenshots.length - 1) {
-      setGameState({
-        ...gameState,
-        guesses: [...gameState.guesses, score],
-        totalScore: newTotalScore,
-      });
-      localStorage.setItem(
-        `gameStateGothicGuesser`,
-        JSON.stringify({
-          ...gameState,
-          guesses: [...gameState.guesses, score],
-          totalScore: newTotalScore,
-          isCompleted: true,
-        })
-      );
       insertGameSummaryPlayer({
-        guesses: [...gameState.guesses, score],
-        totalScore: gameState.totalScore,
+        guesses: newGuesses,
+        totalScore: newTotalScore,
         date: formattedDate,
       });
+      onGameComplete?.(newGuesses, newTotalScore);
     }
+
     setCurrentMap(getMapPathById(currentScreenshot.map_id));
     setLocked(true);
     setPreviewScore(null);
+    setLastScore(score);
+    setScoreModalOpen(true);
   };
 
   const handleNextRound = () => {
@@ -207,29 +208,18 @@ export const InteractiveMap = ({
   };
 
   const getDotStyle = (pos: { x: number; y: number }) => {
-    if (!containerRef.current) return {};
-
-    const rect = containerRef.current.getBoundingClientRect();
-    const img = containerRef.current.querySelector('img') as HTMLImageElement;
-    if (!img) return {};
-
-    const scale = Math.min(
-      rect.width / img.naturalWidth,
-      rect.height / img.naturalHeight
-    );
-
-    const leftOffset = (rect.width - img.naturalWidth * scale) / 2;
-    const topOffset = (rect.height - img.naturalHeight * scale) / 2;
+    const layout = getImageLayout();
+    if (!layout) return {};
 
     return {
-      left: leftOffset + pos.x * scale,
-      top: topOffset + pos.y * scale,
+      left: layout.leftOffset + pos.x * layout.scale,
+      top: layout.topOffset + pos.y * layout.scale,
       transform: 'translate(-50%, -50%)',
     };
   };
 
   return (
-    <div className='flex flex-col'>
+    <div className='flex flex-col w-full'>
       {!gameState.isCompleted && (
         <>
           <MapSelection onSelect={handleSelectMap} />
@@ -237,7 +227,7 @@ export const InteractiveMap = ({
           <div
             ref={containerRef}
             className='relative overflow-hidden'
-            style={{ width: 800, height: 800 }}
+            style={{ width: '100%', maxWidth: 900, aspectRatio: '4 / 3', alignSelf: 'center' }}
             onClick={handleClick}
           >
             {currentMap ? (
@@ -286,21 +276,41 @@ export const InteractiveMap = ({
               <Text variant='danger'>Bledna mapa!</Text>
             </div>
           )}
-          {locked && (
-            <div className='flex flex-col items-center gap-2'>
-              <Text variant='green'>Punkty: {totalScore}</Text>
-
-              {currentScreenshotIndex < screenshots.length - 1 ? (
-                <Button size='sm' onClick={handleNextRound}>
-                  Nastepny screenshot
-                </Button>
-              ) : (
-                <Text>gg</Text>
-              )}
-            </div>
-          )}
         </>
       )}
+
+      <Dialog.Root open={scoreModalOpen} onOpenChange={setScoreModalOpen}>
+        <Dialog.Portal>
+          <Dialog.Overlay className='fixed inset-0 bg-neutral-950 opacity-50' />
+          <Dialog.Content className='fixed left-1/2 top-1/2 w-11/12 -translate-x-1/2 -translate-y-1/2 rounded-md border border-default-border bg-neutral-950 px-10 pb-10 pt-6 shadow-md md:w-5/12'>
+            <Dialog.Title className='mb-4 text-center text-2xl font-semibold'>
+              Wynik
+            </Dialog.Title>
+            <div className='flex flex-col items-center gap-4'>
+              <Text variant='subtitle'>
+                <span className='text-green-500'>+{lastScore}</span> pkt
+              </Text>
+              <Text>Lacznie: {totalScore} pkt</Text>
+              {!isCorrectMap && (
+                <Text variant='danger'>Bledna mapa! (0 pkt)</Text>
+              )}
+              <Button
+                size='sm'
+                onClick={() => {
+                  setScoreModalOpen(false);
+                  if (currentScreenshotIndex < screenshots.length - 1) {
+                    handleNextRound();
+                  }
+                }}
+              >
+                {currentScreenshotIndex < screenshots.length - 1
+                  ? 'Nastepny screenshot'
+                  : 'Zobacz wyniki'}
+              </Button>
+            </div>
+          </Dialog.Content>
+        </Dialog.Portal>
+      </Dialog.Root>
     </div>
   );
 };

@@ -23,6 +23,7 @@ module.exports = {
         fade: 'fadeIn .5s ease-in-out',
         hflip: 'flipHorizontal 1s ease-in',
         flipFadeIn: 'flipFadeIn .5s ease-in-out',
+        shimmer: 'shimmer 1s ease-in-out 3',
       },
 
       keyframes: {
@@ -43,6 +44,10 @@ module.exports = {
             opacity: 1,
             transform: 'rotateY(0deg)',
           },
+        },
+        shimmer: {
+          '0%, 100%': { borderColor: 'var(--default-border)' },
+          '50%': { borderColor: '#facc15' },
         },
       },
     },

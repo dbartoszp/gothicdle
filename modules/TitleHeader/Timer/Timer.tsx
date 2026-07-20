@@ -8,9 +8,11 @@ export const Timer = () => {
   const calculateTimeRemaining = () => {
     const now = new Date();
 
-    const midnightCET = new Date(now);
-
-    midnightCET.setHours(24, 0, 0, 0);
+    const midnightCET = new Date();
+    midnightCET.setUTCHours(23, 0, 0, 0);
+    if (midnightCET <= now) {
+      midnightCET.setUTCDate(midnightCET.getUTCDate() + 1);
+    }
 
     const timeDifference = midnightCET.getTime() - now.getTime();
 
