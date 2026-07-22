@@ -172,10 +172,10 @@ export const InteractiveMap = ({
     const newGuesses = [...gameState.guesses, score];
 
     setTotalScore(newTotalScore);
-    setGameState({ ...gameState, guesses: newGuesses, totalScore: newTotalScore });
+    setGameState({ ...gameState, guesses: newGuesses, totalPoints: newTotalScore });
     localStorage.setItem(
       `gameStateGothicGuesser`,
-      JSON.stringify({ ...gameState, guesses: newGuesses, totalScore: newTotalScore })
+      JSON.stringify({ ...gameState, guesses: newGuesses, totalPoints: newTotalScore })
     );
 
     if (currentScreenshotIndex === screenshots.length - 1) {
