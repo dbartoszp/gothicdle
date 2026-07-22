@@ -32,6 +32,7 @@ const month = currentDate.getMonth() + 1;
 const year = currentDate.getFullYear();
 
 const formattedDate = `${day}-${month}-${year}`;
+const isoDate = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
 
 const defaultGameStateGothicGuesser = {
   date: formattedDate,
@@ -181,7 +182,7 @@ export const InteractiveMap = ({
       insertGameSummaryPlayer({
         guesses: newGuesses,
         totalScore: newTotalScore,
-        date: formattedDate,
+        date: isoDate,
       });
       onGameComplete?.(newGuesses, newTotalScore);
     }

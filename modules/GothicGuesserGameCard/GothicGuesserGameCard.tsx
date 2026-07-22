@@ -15,6 +15,8 @@ const year = currentDate.getFullYear();
 
 const formattedDate = `${day}-${month}-${year}`;
 
+const isoDate = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+
 const defaultGameStateGothicGuesser = {
   date: formattedDate,
   guesses: [] as number[],
@@ -85,7 +87,7 @@ export default function GothicGuesserGameCard() {
   return (
     <Card type='flex-col' size='lg'>
       {gameState.isCompleted ? (
-        <GothicguesserGameSummary guesses={gameState.guesses} totalScore={gameState.totalScore} />
+        <GothicguesserGameSummary guesses={gameState.guesses} totalScore={gameState.totalScore} date={isoDate} screenshots={data} />
       ) : (
         <>
           <ScreenshotSection
