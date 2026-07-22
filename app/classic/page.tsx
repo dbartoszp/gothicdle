@@ -14,7 +14,7 @@ export default function Classic() {
         {/* <Maintenance /> */}
 
         <GoBackButton />
-        <TitleHeader />
+        <TitleHeader title='Gothicdle - Klasyczny' />
         <Timer />
         <MainGameCard />
         <Instructions />

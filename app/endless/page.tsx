@@ -12,7 +12,7 @@ export default function Endless() {
       <Suspense>
         {/* <Maintenance /> */}
         <GoBackButton />
-        <TitleHeader />
+        <TitleHeader title='Gothicdle - Endless' />
         <EndlessGameCard />
         <Instructions />
         <BugReport />
