@@ -24,7 +24,7 @@ const formattedDate = `${day}-${month}-${year}`;
 
 const defaultGameState = {
   date: formattedDate,
-  guesses: [],
+  guesses: [] as number[],
   isCorrectlyGuessed: false,
 };
 

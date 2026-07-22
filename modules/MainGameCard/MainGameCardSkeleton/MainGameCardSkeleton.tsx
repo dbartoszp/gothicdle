@@ -8,7 +8,7 @@ export const MainGameCardSkeleton = () => {
 	return (
 		<>
 			<main className="flex min-h-screen flex-col items-center space-y-12 pt-12">
-				<TitleHeader />
+				<TitleHeader title='Gothicdle' />
 				<Card>
 					<Skeleton width={300} height={100} />
 				</Card>
