@@ -36,7 +36,7 @@ const isoDate = `${year}-${String(month).padStart(2, '0')}-${String(day).padStar
 
 const defaultGameStateGothicGuesser = {
   date: formattedDate,
-  guesses: [],
+  guesses: [] as number[],
   totalPoints: 0,
   isCompleted: false,
 };
