@@ -20,6 +20,7 @@
 }
 
 body {
+  overflow-y: scroll;
   color: #fdf7e6;
   background: #182d39;
   background-image: url('../public/imgs/background.png');

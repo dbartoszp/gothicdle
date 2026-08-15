@@ -19,12 +19,12 @@ export const MapSelection = ({ onSelect }: MapSelectionProps) => {
   return (
     <>
       <Text variant='subtitle'>Wybor mapy:</Text>
-      <div className='flex flex-row justify-center gap-x-4 pt-6'>
+      <div className='flex flex-row flex-wrap justify-center gap-x-4 gap-y-2 pt-6 md:flex-nowrap'>
         {Object.entries(MAPS).map(([groupKey, group]) => (
           <div key={groupKey} className='relative flex flex-col gap-y-1'>
             <Button
               size='sm'
-              width='w-36'
+              width='w-28 md:w-36'
               onClick={() => toggleGroup(groupKey)}
             >
               {group.name}
@@ -35,7 +35,7 @@ export const MapSelection = ({ onSelect }: MapSelectionProps) => {
                 {group.maps.map((map) => (
                   <Button
                     size='sm'
-                    width='w-36'
+                    width='w-28 md:w-36'
                     key={map.path}
                     onClick={() => onSelect(map.path)}
                   >

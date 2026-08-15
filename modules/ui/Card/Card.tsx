@@ -15,7 +15,7 @@ export const Card = ({
 }: CardProps) => {
   const sizeClasses =
     size === 'lg'
-      ? 'w-[95vw] md:max-w-7xl px-12 py-12 gap-x-6 gap-y-6'
+      ? 'w-[95vw] md:max-w-7xl px-4 md:px-12 py-12 gap-x-6 gap-y-6'
       : 'w-[90%] sm:w-auto md:max-w-5xl px-20 py-8 md:py-10';
 
   return (

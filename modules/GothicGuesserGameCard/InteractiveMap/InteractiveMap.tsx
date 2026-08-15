@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useRef, MouseEvent, useEffect, useCallback } from 'react';
-import * as Dialog from '@radix-ui/react-dialog';
 import Image from 'next/image';
 import { MapSelection } from './MapSelection/MapSelection';
 import { calculateExponentialScore } from '../utilities/calculateExponentialScore';
@@ -63,8 +62,8 @@ export const InteractiveMap = ({
   const [previewScore, setPreviewScore] = useState<number | null>(null);
   const [gameState, setGameState] = useState(defaultGameStateGothicGuesser);
   const [isCorrectMap, setIsCorrectMap] = useState(true);
-  const [scoreModalOpen, setScoreModalOpen] = useState(false);
   const [lastScore, setLastScore] = useState(0);
+  const [pendingComplete, setPendingComplete] = useState<{ guesses: number[]; totalScore: number } | null>(null);
 
   const currentScreenshot = screenshots[currentScreenshotIndex];
 
@@ -184,14 +183,13 @@ export const InteractiveMap = ({
         totalScore: newTotalScore,
         date: isoDate,
       });
-      onGameComplete?.(newGuesses, newTotalScore);
+      setPendingComplete({ guesses: newGuesses, totalScore: newTotalScore });
     }
 
     setCurrentMap(getMapPathById(currentScreenshot.map_id));
     setLocked(true);
     setPreviewScore(null);
     setLastScore(score);
-    setScoreModalOpen(true);
   };
 
   const handleNextRound = () => {
@@ -261,6 +259,30 @@ export const InteractiveMap = ({
                 })}
               />
             )}
+
+            {locked && dotPos && currentScreenshot && isCorrectMap && (() => {
+              const layout = getImageLayout();
+              if (!layout) return null;
+              const x1 = layout.leftOffset + dotPos.x * layout.scale;
+              const y1 = layout.topOffset + dotPos.y * layout.scale;
+              const x2 = layout.leftOffset + currentScreenshot.coordX * layout.scale;
+              const y2 = layout.topOffset + currentScreenshot.coordY * layout.scale;
+              return (
+                <svg
+                  className='pointer-events-none absolute inset-0'
+                  width='100%'
+                  height='100%'
+                >
+                  <line
+                    x1={x1} y1={y1} x2={x2} y2={y2}
+                    stroke='white'
+                    strokeWidth={2}
+                    strokeDasharray='6 4'
+                    strokeOpacity={0.8}
+                  />
+                </svg>
+              );
+            })()}
           </div>
 
           {previewScore !== null && !locked && <Text>{previewScore}</Text>}
@@ -271,47 +293,34 @@ export const InteractiveMap = ({
                 <Text>Zgadnij</Text>
               </Button>
             )}
+            {locked && (
+              <Button
+                size='sm'
+                onClick={() => {
+                  if (pendingComplete) {
+                    onGameComplete?.(pendingComplete.guesses, pendingComplete.totalScore);
+                  } else {
+                    handleNextRound();
+                  }
+                }}
+              >
+                {pendingComplete ? 'Zobacz wyniki' : 'Nastepny screenshot'}
+              </Button>
+            )}
           </div>
-          {locked && !isCorrectMap && (
-            <div>
-              <Text variant='danger'>Bledna mapa!</Text>
+
+          {locked && (
+            <div className='flex flex-col items-center gap-1'>
+              <Text variant='subtitle'>
+                <span className='text-green-500'>+{lastScore}</span> pkt
+              </Text>
+              <Text>Lacznie: {totalScore} pkt</Text>
+              {!isCorrectMap && <Text variant='danger'>Bledna mapa! (0 pkt)</Text>}
             </div>
           )}
         </>
       )}
 
-      <Dialog.Root open={scoreModalOpen} onOpenChange={setScoreModalOpen}>
-        <Dialog.Portal>
-          <Dialog.Overlay className='fixed inset-0 bg-neutral-950 opacity-50' />
-          <Dialog.Content className='fixed left-1/2 top-1/2 w-11/12 -translate-x-1/2 -translate-y-1/2 rounded-md border border-default-border bg-neutral-950 px-10 pb-10 pt-6 shadow-md md:w-5/12'>
-            <Dialog.Title className='mb-4 text-center text-2xl font-semibold'>
-              Wynik
-            </Dialog.Title>
-            <div className='flex flex-col items-center gap-4'>
-              <Text variant='subtitle'>
-                <span className='text-green-500'>+{lastScore}</span> pkt
-              </Text>
-              <Text>Lacznie: {totalScore} pkt</Text>
-              {!isCorrectMap && (
-                <Text variant='danger'>Bledna mapa! (0 pkt)</Text>
-              )}
-              <Button
-                size='sm'
-                onClick={() => {
-                  setScoreModalOpen(false);
-                  if (currentScreenshotIndex < screenshots.length - 1) {
-                    handleNextRound();
-                  }
-                }}
-              >
-                {currentScreenshotIndex < screenshots.length - 1
-                  ? 'Nastepny screenshot'
-                  : 'Zobacz wyniki'}
-              </Button>
-            </div>
-          </Dialog.Content>
-        </Dialog.Portal>
-      </Dialog.Root>
     </div>
   );
 };
