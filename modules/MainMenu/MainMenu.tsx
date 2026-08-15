@@ -5,7 +5,16 @@ import { Text } from '../ui/Text/Text';
 export const MainMenu = () => {
   return (
     <div className='flex flex-col items-center space-y-8 pt-6'>
-      <Card>
+      <Card extraClasses='animate-shimmer'>
+        <div className='flex flex-col space-y-6 md:max-w-sm'>
+          <Link size='md' href='/gothicguesser'>
+            GOTHICGUESSER
+          </Link>
+          <Text>
+            Zgadnij miejsce na mapie na podstawie screenshota z gry!
+          </Text>
+        </div>
+      </Card><Card>
         <div className='flex flex-col space-y-6 md:max-w-sm'>
           <Link size='md' href='/classic'>
             KLASYCZNY
@@ -26,16 +35,7 @@ export const MainMenu = () => {
           </Text>
         </div>
       </Card>
-      <Card extraClasses='animate-shimmer'>
-        <div className='flex flex-col space-y-6 md:max-w-sm'>
-          <Link size='md' href='/gothicguesser'>
-            GOTHIC GUESSER
-          </Link>
-          <Text>
-            Zgadnij miejsce na mapie na podstawie screenshota z gry!
-          </Text>
-        </div>
-      </Card>
+      
     </div>
   );
 };
