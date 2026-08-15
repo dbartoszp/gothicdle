@@ -102,6 +102,7 @@ export const GothicguesserGameSummary = ({
 
   return (
     <div className='mb-4 mt-8 flex flex-col items-center space-y-8 w-full'>
+      <Text variant='subtitle'>Stary, ale jazda!</Text>
       <Image src={BEZI_PATH} width={120} height={120} alt='usmiechniety bezimienny' />
 
       <div className='flex flex-col items-center gap-1'>
@@ -171,15 +172,15 @@ export const GothicguesserGameSummary = ({
               labelStyle={{ color: '#fdf7e6' }}
               itemStyle={{ color: '#fdf7e6' }}
               formatter={(value, name) => {
-                if (name !== 'srednia' && value === 0) return null;
-                const label = name === 'srednia' ? 'Srednia graczy' : 'Twoj wynik';
+                if (name !== 'Srednia graczy' && value === 0) return null;
+                const label = name === 'Srednia graczy' ? 'Srednia graczy' : 'Twoj wynik';
                 return [`${value} pkt`, label];
               }}
             />
             <Bar dataKey='wysoki' name='Twoj wynik' stackId='a' fill='#22c55e' radius={[4, 4, 0, 0]} />
             <Bar dataKey='sredni' name='Twoj wynik' stackId='a' fill='#f97316' radius={[4, 4, 0, 0]} />
             <Bar dataKey='niski' name='Twoj wynik' stackId='a' fill='#ef4444' radius={[4, 4, 0, 0]} />
-            {stats && <Bar dataKey='srednia' name='Srednia graczy' fill='#acacac' radius={[4, 4, 0, 0]} />}
+            {stats && <Bar dataKey='srednia' name='Srednia graczy' fill={BAR_COLOR} radius={[4, 4, 0, 0]} />}
           </BarChart>
         </ResponsiveContainer>
         <div className='flex justify-center gap-6 mt-2 text-xs' style={{ color: '#fdf7e6' }}>
@@ -197,7 +198,7 @@ export const GothicguesserGameSummary = ({
           </div>
           {stats && (
             <div className='flex items-center gap-1'>
-              <span className='inline-block w-3 h-3 rounded-sm' style={{ background: '#acacac' }} />
+              <span className='inline-block w-3 h-3 rounded-sm' style={{ background: BAR_COLOR }} />
               <span>Srednia</span>
             </div>
           )}
