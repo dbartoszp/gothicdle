@@ -2,31 +2,32 @@ import clsx from 'clsx';
 import { ReactNode } from 'react';
 
 type TextProps = {
-	children: ReactNode;
-	variant?: string;
+  children: ReactNode;
+  variant?: string;
 };
 
 type ClassNames = {
-	[key: string]: string;
+  [key: string]: string;
 };
 
 const variants: ClassNames = {
-	small: 'text-xs',
-	default: 'text-sm',
-	title: 'text-5xl md:text-7xl tracking-widest',
-	subtitle: 'text-xl  tracking-wide',
-	danger: 'text-md text-red-500',
-	dangerSm: 'text-xs text-red-500',
-	green: 'text-md text-green-500',
-	greenSm: 'text-xs text-green-500',
+  small: 'text-xs',
+  default: 'text-sm',
+  title: 'text-5xl md:text-7xl tracking-widest',
+  title_sm: 'text-4xl md:text-5xl tracking-widest',
+  subtitle: 'text-xl  tracking-wide',
+  danger: 'text-md text-red-500',
+  dangerSm: 'text-xs text-red-500',
+  green: 'text-md text-green-500',
+  greenSm: 'text-xs text-green-500',
 };
 
 export const Text = (props: TextProps) => {
-	const { variant = 'default' } = props;
+  const { variant = 'default' } = props;
 
-	const className = clsx('', { [variants[variant]]: props.variant });
+  const className = clsx('', { [variants[variant]]: props.variant });
 
-	if (props.variant === 'mainInfo')
-		return <h1 className={className}>{props.children}</h1>;
-	return <h2 className={className}>{props.children}</h2>;
+  if (props.variant === 'mainInfo')
+    return <h1 className={className}>{props.children}</h1>;
+  return <h2 className={className}>{props.children}</h2>;
 };

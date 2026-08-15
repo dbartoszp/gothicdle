@@ -8,7 +8,7 @@ export default function Home() {
   return (
     <main className='flex min-h-screen flex-col items-center space-y-8 pt-2 md:space-y-12'>
       <Utilities />
-      <TitleHeader title='GothicGuesser - demo ' />
+      <TitleHeader title='GothicGuesser' />
       <Timer />
       <GoBackButton />
       <GothicGuesserGameCard />
