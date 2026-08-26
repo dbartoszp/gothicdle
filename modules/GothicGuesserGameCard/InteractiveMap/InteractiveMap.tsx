@@ -22,7 +22,7 @@ type InteractiveMapProps = {
   screenshots: Screenshot[];
   currentScreenshotIndex: number;
   onNextRound?: () => void;
-  onGameComplete?: (guesses: number[], totalScore: number) => void;
+  onGameComplete?: (guesses: number[], totalScore: number, wrongMapIndices: number[]) => void;
 };
 
 const currentDate = new Date();
@@ -46,6 +46,24 @@ const MAP_DIMENSIONS: Record<string, { naturalWidth: number; naturalHeight: numb
     return acc;
   }, {} as Record<string, { naturalWidth: number; naturalHeight: number }>);
 
+const MAP_CLICK_ZONES: Record<string, { polygon: [number, number][]; targetMapPath: string }[]> =
+  Object.values(MAPS).flatMap((g) => g.maps).reduce((acc, m) => {
+    if (m.clickZones) acc[m.path] = m.clickZones;
+    return acc;
+  }, {} as Record<string, { polygon: [number, number][]; targetMapPath: string }[]>);
+
+function pointInPolygon(x: number, y: number, polygon: [number, number][]): boolean {
+  let inside = false;
+  for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+    const xi = polygon[i][0], yi = polygon[i][1];
+    const xj = polygon[j][0], yj = polygon[j][1];
+    if ((yi > y) !== (yj > y) && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi) {
+      inside = !inside;
+    }
+  }
+  return inside;
+}
+
 export const InteractiveMap = ({
   screenshots,
   currentScreenshotIndex,
@@ -63,7 +81,9 @@ export const InteractiveMap = ({
   const [gameState, setGameState] = useState(defaultGameStateGothicGuesser);
   const [isCorrectMap, setIsCorrectMap] = useState(true);
   const [lastScore, setLastScore] = useState(0);
-  const [pendingComplete, setPendingComplete] = useState<{ guesses: number[]; totalScore: number } | null>(null);
+  const [pendingComplete, setPendingComplete] = useState<{ guesses: number[]; totalScore: number; wrongMapIndices: number[] } | null>(null);
+  const [hoveredZone, setHoveredZone] = useState<string | null>(null);
+  const [wrongMapIndices, setWrongMapIndices] = useState<number[]>([]);
 
   const currentScreenshot = screenshots[currentScreenshotIndex];
 
@@ -131,28 +151,50 @@ export const InteractiveMap = ({
     return JSON.stringify(defaultGameStateGothicGuesser);
   };
 
+  const getNaturalPos = useCallback((e: MouseEvent<HTMLDivElement>) => {
+    if (!containerRef.current) return null;
+    const layout = getImageLayout();
+    if (!layout) return null;
+    const rect = containerRef.current.getBoundingClientRect();
+    const x = (e.clientX - rect.left - layout.leftOffset) / layout.scale;
+    const y = (e.clientY - rect.top - layout.topOffset) / layout.scale;
+    if (x < 0 || y < 0 || x > layout.naturalWidth || y > layout.naturalHeight) return null;
+    return { x, y };
+  }, [getImageLayout]);
+
+  const getHitZone = useCallback((x: number, y: number) => {
+    if (!currentMap) return null;
+    const zones = MAP_CLICK_ZONES[currentMap];
+    if (!zones) return null;
+    return zones.find((z) => pointInPolygon(x, y, z.polygon)) ?? null;
+  }, [currentMap]);
+
+  const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
+    if (locked || !currentMap) return;
+    const pos = getNaturalPos(e);
+    if (!pos) { setHoveredZone(null); return; }
+    const zone = getHitZone(pos.x, pos.y);
+    setHoveredZone(zone ? zone.targetMapPath : null);
+  };
+
+  const handleMouseLeave = () => setHoveredZone(null);
+
   const handleClick = (e: MouseEvent<HTMLDivElement>) => {
     if (!containerRef.current || locked || !currentMap) return;
+    const pos = getNaturalPos(e);
+    if (!pos) return;
 
-    const layout = getImageLayout();
-    if (!layout) return;
-
-    const rect = containerRef.current.getBoundingClientRect();
-    const xOnImage = (e.clientX - rect.left - layout.leftOffset) / layout.scale;
-    const yOnImage = (e.clientY - rect.top - layout.topOffset) / layout.scale;
-
-    if (
-      xOnImage < 0 ||
-      yOnImage < 0 ||
-      xOnImage > layout.naturalWidth ||
-      yOnImage > layout.naturalHeight
-    ) {
+    const zone = getHitZone(pos.x, pos.y);
+    if (zone) {
+      setCurrentMap(zone.targetMapPath);
+      setDotPos(null);
+      setPreviewScore(null);
+      setHoveredZone(null);
       return;
     }
 
-    const naturalPos = { x: xOnImage, y: yOnImage };
-    setDotPos(naturalPos);
-    setPreviewScore(calculateScoreForPosition(naturalPos));
+    setDotPos(pos);
+    setPreviewScore(calculateScoreForPosition(pos));
   };
 
   const handleSelectMap = (mapPath: string) => {
@@ -167,6 +209,12 @@ export const InteractiveMap = ({
 
     setIsCorrectMap(true);
     const score = calculateScoreForPosition(dotPos);
+    const selectedMapId = Number(currentMap?.match(/\/(\d+)_/)?.[1]);
+    const isWrongMap = selectedMapId !== currentScreenshot.map_id;
+    const newWrongMapIndices = isWrongMap
+      ? [...wrongMapIndices, currentScreenshotIndex]
+      : wrongMapIndices;
+    setWrongMapIndices(newWrongMapIndices);
     const newTotalScore = totalScore + score;
     const newGuesses = [...gameState.guesses, score];
 
@@ -183,12 +231,11 @@ export const InteractiveMap = ({
         totalScore: newTotalScore,
         date: isoDate,
       });
-      setPendingComplete({ guesses: newGuesses, totalScore: newTotalScore });
+      setPendingComplete({ guesses: newGuesses, totalScore: newTotalScore, wrongMapIndices: newWrongMapIndices });
     }
 
     setCurrentMap(getMapPathById(currentScreenshot.map_id));
-    const selectedMapId = Number(currentMap?.match(/\/(\d+)_/)?.[1]);
-    if (selectedMapId !== currentScreenshot.map_id) setDotPos(null);
+    if (isWrongMap) setDotPos(null);
     setLocked(true);
     setPreviewScore(null);
     setLastScore(score);
@@ -199,6 +246,7 @@ export const InteractiveMap = ({
     setLocked(false);
     setPreviewScore(null);
     setCurrentMap(null);
+    setHoveredZone(null);
 
     window.scrollTo({
       top: 250,
@@ -219,6 +267,14 @@ export const InteractiveMap = ({
     };
   };
 
+  const getScaledPolygonPoints = useCallback((polygon: [number, number][]) => {
+    const layout = getImageLayout();
+    if (!layout) return '';
+    return polygon
+      .map(([x, y]) => `${layout.leftOffset + x * layout.scale},${layout.topOffset + y * layout.scale}`)
+      .join(' ');
+  }, [getImageLayout]);
+
   return (
     <div className='flex flex-col w-full'>
       {!gameState.isCompleted && (
@@ -228,8 +284,10 @@ export const InteractiveMap = ({
           <div
             ref={containerRef}
             className='relative overflow-hidden'
-            style={{ width: '100%', maxWidth: 900, aspectRatio: '4 / 3', alignSelf: 'center' }}
+            style={{ width: '100%', maxWidth: 900, aspectRatio: '4 / 3', alignSelf: 'center', cursor: hoveredZone ? 'pointer' : 'crosshair' }}
             onClick={handleClick}
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}
           >
             {currentMap ? (
               <Image
@@ -243,6 +301,19 @@ export const InteractiveMap = ({
               <div className='items-center'>
                 <Text>Wybierz mape</Text>
               </div>
+            )}
+
+            {currentMap && !locked && MAP_CLICK_ZONES[currentMap] && (
+              <svg className='pointer-events-none absolute inset-0' width='100%' height='100%'>
+                {MAP_CLICK_ZONES[currentMap].map((zone) => (
+                  <polygon
+                    key={zone.targetMapPath}
+                    points={getScaledPolygonPoints(zone.polygon)}
+                    fill={hoveredZone === zone.targetMapPath ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.10)'}
+                    stroke='none'
+                  />
+                ))}
+              </svg>
             )}
 
             {dotPos && (
@@ -300,7 +371,7 @@ export const InteractiveMap = ({
                 size='sm'
                 onClick={() => {
                   if (pendingComplete) {
-                    onGameComplete?.(pendingComplete.guesses, pendingComplete.totalScore);
+                    onGameComplete?.(pendingComplete.guesses, pendingComplete.totalScore, pendingComplete.wrongMapIndices);
                   } else {
                     handleNextRound();
                   }

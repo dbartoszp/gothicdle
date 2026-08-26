@@ -52,8 +52,11 @@ const buildHistogram = (values: number[], max: number, bins: number) => {
   return data;
 };
 
-const handleCopyToClipboard = (guesses: number[], totalScore: number) => {
-  const lines = guesses.map((score) => `${scoreToEmoji(score).repeat(5)} ${score} pkt`);
+const handleCopyToClipboard = (guesses: number[], totalScore: number, wrongMapIndices: number[]) => {
+  const lines = guesses.map((score, i) => {
+    const wrongMap = wrongMapIndices.includes(i) ? ' (bledna mapa)' : '';
+    return `${scoreToEmoji(score).repeat(5)} ${score} pkt${wrongMap ? ' (błędna mapa)' : ''}`;
+  });
   const clipboardText =
     `GothicGuesser - ${totalScore}/${guesses.length * MAX_SCORE} pkt\n` +
     lines.join('\n') +
@@ -75,6 +78,7 @@ type GothicguesserGameSummaryProps = {
   totalScore: number;
   date: string;
   screenshots: Screenshot[];
+  wrongMapIndices: number[];
 };
 
 export const GothicguesserGameSummary = ({
@@ -82,13 +86,15 @@ export const GothicguesserGameSummary = ({
   totalScore,
   date,
   screenshots,
+  wrongMapIndices,
 }: GothicguesserGameSummaryProps) => {
   const { data: stats } = useGetDailyStats(date);
   const [activeScreenshot, setActiveScreenshot] = useState<number | null>(null);
 
-  const diff = stats ? totalScore - stats.avgTotal : null;
+  const isFirst = stats ? stats.allTotals.length <= 1 : false;
+  const diff = stats && !isFirst ? totalScore - stats.avgTotal : null;
 
-  const totalHistogram = stats?.allTotals
+  const totalHistogram = !isFirst && stats?.allTotals
     ? buildHistogram(stats.allTotals, TOTAL_MAX, HISTOGRAM_BINS)
     : null;
 
@@ -97,7 +103,7 @@ export const GothicguesserGameSummary = ({
     wysoki: score >= MAX_SCORE * 0.9 ? score : 0,
     sredni: score >= MAX_SCORE * 0.5 && score < MAX_SCORE * 0.9 ? score : 0,
     niski: score < MAX_SCORE * 0.5 ? score : 0,
-    ...(stats?.avgGuesses?.[i] !== undefined ? { srednia: stats.avgGuesses[i] } : {}),
+    ...(stats && !isFirst && stats?.avgGuesses?.[i] !== undefined ? { srednia: stats.avgGuesses[i] } : {}),
   }));
 
   return (
@@ -118,6 +124,9 @@ export const GothicguesserGameSummary = ({
             </span>{' '}
             od sredniej
           </Text>
+        )}
+        {isFirst && (
+          <Text>Wroc pozniej, by zobaczyc srednia punktow jaka zdobyli inni gracze</Text>
         )}
       </div>
 
@@ -208,9 +217,9 @@ export const GothicguesserGameSummary = ({
       <div className='w-full max-w-lg flex flex-col gap-3'>
         <p className='text-xs' style={{ color: '#fdf7e6' }}>Szczegoly per screenshot</p>
         {guesses.map((score, i) => {
-          const avg = stats?.avgGuesses?.[i];
+          const avg = !isFirst ? stats?.avgGuesses?.[i] : undefined;
           const scrDiff = avg !== undefined ? score - avg : null;
-          const histogram = stats?.allGuesses?.[i]
+          const histogram = !isFirst && stats?.allGuesses?.[i]
             ? buildHistogram(stats.allGuesses[i], MAX_SCORE, 5)
             : null;
 
@@ -301,7 +310,7 @@ export const GothicguesserGameSummary = ({
         })}
       </div>
 
-      <Button size='sm' onClick={() => handleCopyToClipboard(guesses, totalScore)}>
+      <Button size='sm' onClick={() => handleCopyToClipboard(guesses, totalScore, wrongMapIndices)}>
         <FaRegCopy size={30} />
       </Button>
     </div>

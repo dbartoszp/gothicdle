@@ -22,6 +22,7 @@ const defaultGameStateGothicGuesser = {
   guesses: [] as number[],
   totalScore: 0,
   isCompleted: false,
+  wrongMapIndices: [] as number[],
 };
 
 export default function GothicGuesserGameCard() {
@@ -40,14 +41,13 @@ export default function GothicGuesserGameCard() {
   };
 
   useEffect(() => {
-    setGameState(
-      getStoredGameState() &&
-        JSON.parse(getStoredGameState()).date ===
-          defaultGameStateGothicGuesser.date
-        ? JSON.parse(getStoredGameState())
-        : defaultGameStateGothicGuesser
-    );
-  }, []);
+    const stored = getStoredGameState();
+    const parsed = JSON.parse(stored);
+    if (parsed.date === defaultGameStateGothicGuesser.date) {
+      setGameState(parsed);
+      setCurrentIndex(parsed.isCompleted ? 0 : Math.min(parsed.guesses.length, data ? data.length - 1 : 0));
+    }
+  }, [data]);
 
   if (isLoading) {
     return (
@@ -80,14 +80,16 @@ export default function GothicGuesserGameCard() {
     setCurrentIndex((prev) => (prev === data.length - 1 ? prev : prev + 1));
   };
 
-  const handleGameComplete = (guesses: number[], totalScore: number) => {
-    setGameState({ ...defaultGameStateGothicGuesser, guesses, totalScore, isCompleted: true });
+  const handleGameComplete = (guesses: number[], totalScore: number, wrongMapIndices: number[]) => {
+    const newState = { ...defaultGameStateGothicGuesser, guesses, totalScore, isCompleted: true, wrongMapIndices };
+    setGameState(newState);
+    localStorage.setItem('gameStateGothicGuesser', JSON.stringify(newState));
   };
 
   return (
     <Card type='flex-col' size='lg'>
       {gameState.isCompleted ? (
-        <GothicguesserGameSummary guesses={gameState.guesses} totalScore={gameState.totalScore} date={isoDate} screenshots={data} />
+        <GothicguesserGameSummary guesses={gameState.guesses} totalScore={gameState.totalScore} date={isoDate} screenshots={data} wrongMapIndices={gameState.wrongMapIndices} />
       ) : (
         <>
           <ScreenshotSection
