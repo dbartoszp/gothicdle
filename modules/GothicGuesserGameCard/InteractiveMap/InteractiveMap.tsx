@@ -156,9 +156,9 @@ export const InteractiveMap = ({
   };
 
   const handleSelectMap = (mapPath: string) => {
+    if (locked) return;
     setCurrentMap(mapPath);
     setDotPos(null);
-    setLocked(false);
     setPreviewScore(null);
   };
 
@@ -187,6 +187,8 @@ export const InteractiveMap = ({
     }
 
     setCurrentMap(getMapPathById(currentScreenshot.map_id));
+    const selectedMapId = Number(currentMap?.match(/\/(\d+)_/)?.[1]);
+    if (selectedMapId !== currentScreenshot.map_id) setDotPos(null);
     setLocked(true);
     setPreviewScore(null);
     setLastScore(score);
