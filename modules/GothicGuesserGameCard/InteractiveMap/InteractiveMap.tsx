@@ -18,11 +18,13 @@ type Screenshot = {
   map_id: number;
 };
 
+export type DotPosition = { x: number; y: number } | null;
+
 type InteractiveMapProps = {
   screenshots: Screenshot[];
   currentScreenshotIndex: number;
   onNextRound?: () => void;
-  onGameComplete?: (guesses: number[], totalScore: number, wrongMapIndices: number[]) => void;
+  onGameComplete?: (guesses: number[], totalScore: number, wrongMapIndices: number[], dotPositions: DotPosition[], playerMapPaths: (string | null)[]) => void;
 };
 
 const currentDate = new Date();
@@ -38,6 +40,8 @@ const defaultGameStateGothicGuesser = {
   guesses: [] as number[],
   totalPoints: 0,
   isCompleted: false,
+  dotPositions: [] as DotPosition[],
+  playerMapPaths: [] as (string | null)[],
 };
 
 const MAP_DIMENSIONS: Record<string, { naturalWidth: number; naturalHeight: number }> =
@@ -81,19 +85,19 @@ export const InteractiveMap = ({
   const [gameState, setGameState] = useState(defaultGameStateGothicGuesser);
   const [isCorrectMap, setIsCorrectMap] = useState(true);
   const [lastScore, setLastScore] = useState(0);
-  const [pendingComplete, setPendingComplete] = useState<{ guesses: number[]; totalScore: number; wrongMapIndices: number[] } | null>(null);
+  const [pendingComplete, setPendingComplete] = useState<{ guesses: number[]; totalScore: number; wrongMapIndices: number[]; dotPositions: DotPosition[]; playerMapPaths: (string | null)[] } | null>(null);
   const [hoveredZone, setHoveredZone] = useState<string | null>(null);
   const [wrongMapIndices, setWrongMapIndices] = useState<number[]>([]);
 
   const currentScreenshot = screenshots[currentScreenshotIndex];
 
   useEffect(() => {
-    setGameState(
-      getStoredGameState() &&
-        JSON.parse(getStoredGameState()).date === defaultGameStateGothicGuesser.date
-        ? JSON.parse(getStoredGameState())
-        : defaultGameStateGothicGuesser
-    );
+    const stored = JSON.parse(getStoredGameState());
+    if (stored.date === defaultGameStateGothicGuesser.date) {
+      setGameState(stored);
+      setTotalScore(stored.totalPoints ?? 0);
+      if (stored.wrongMapIndices) setWrongMapIndices(stored.wrongMapIndices);
+    }
   }, []);
 
   useEffect(() => {
@@ -217,13 +221,20 @@ export const InteractiveMap = ({
     setWrongMapIndices(newWrongMapIndices);
     const newTotalScore = totalScore + score;
     const newGuesses = [...gameState.guesses, score];
+    const newDotPositions = [...(gameState.dotPositions ?? []), dotPos];
+    const newPlayerMapPaths = [...(gameState.playerMapPaths ?? []), currentMap];
 
     setTotalScore(newTotalScore);
-    setGameState({ ...gameState, guesses: newGuesses, totalPoints: newTotalScore });
-    localStorage.setItem(
-      `gameStateGothicGuesser`,
-      JSON.stringify({ ...gameState, guesses: newGuesses, totalPoints: newTotalScore })
-    );
+    const newState = {
+      ...gameState,
+      guesses: newGuesses,
+      totalPoints: newTotalScore,
+      dotPositions: newDotPositions,
+      playerMapPaths: newPlayerMapPaths,
+      wrongMapIndices: newWrongMapIndices,
+    };
+    setGameState(newState);
+    localStorage.setItem(`gameStateGothicGuesser`, JSON.stringify(newState));
 
     if (currentScreenshotIndex === screenshots.length - 1) {
       insertGameSummaryPlayer({
@@ -231,7 +242,7 @@ export const InteractiveMap = ({
         totalScore: newTotalScore,
         date: isoDate,
       });
-      setPendingComplete({ guesses: newGuesses, totalScore: newTotalScore, wrongMapIndices: newWrongMapIndices });
+      setPendingComplete({ guesses: newGuesses, totalScore: newTotalScore, wrongMapIndices: newWrongMapIndices, dotPositions: newDotPositions, playerMapPaths: newPlayerMapPaths });
     }
 
     setCurrentMap(getMapPathById(currentScreenshot.map_id));
@@ -371,7 +382,7 @@ export const InteractiveMap = ({
                 size='sm'
                 onClick={() => {
                   if (pendingComplete) {
-                    onGameComplete?.(pendingComplete.guesses, pendingComplete.totalScore, pendingComplete.wrongMapIndices);
+                    onGameComplete?.(pendingComplete.guesses, pendingComplete.totalScore, pendingComplete.wrongMapIndices, pendingComplete.dotPositions, pendingComplete.playerMapPaths);
                   } else {
                     handleNextRound();
                   }

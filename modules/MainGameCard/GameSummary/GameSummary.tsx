@@ -2,6 +2,7 @@ import { useGetMultipleCharactersByIdsAndDatabase } from '@/modules/characters/h
 import { arraysHaveCommonItems } from '@/modules/characters/utils/arraysHaveCommonItems';
 import { arraysHaveSameItems } from '@/modules/characters/utils/arraysHaveSameItems';
 import { Button } from '@/modules/ui/Button/Button';
+import { BaseButton } from '@/modules/ui/Button/BaseButton/BaseButton';
 import { ErrorMessage } from '@/modules/ui/ErrorMessage/ErrorMessage';
 import { Text } from '@/modules/ui/Text/Text';
 import Image from 'next/image';
@@ -135,13 +136,14 @@ export const GameSummary = ({
         </div>
       )}
       {!isEndless && (
-        <div>
+        <div className='flex flex-col items-center gap-3'>
           <Button
             size='sm'
             onClick={() => handleCopyToClipboard(isEndless, allRows)}
           >
             <FaRegCopy size={30} />
           </Button>
+          <BaseButton as='a' href='/gothicguesser' size='sm' variant='primary'>Zagraj w GothicGuessera!</BaseButton>
         </div>
       )}
     </div>

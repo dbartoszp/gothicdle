@@ -6,6 +6,7 @@ import { InteractiveMap } from './InteractiveMap/InteractiveMap';
 import { ScreenshotSection } from './ScreenshotSection/ScreenshotSection';
 import { useGetScreenshotsTesting } from '@/modules/screenshots/hooks/useGetScreenshotsTesting/useGetScreenshotsTesting';
 import { Text } from '../ui/Text/Text';
+import { DotPosition } from './InteractiveMap/InteractiveMap';
 import { GothicguesserGameSummary } from './GothicguesserGameSummary/GothicguesserGameSummary';
 
 const currentDate = new Date();
@@ -23,6 +24,8 @@ const defaultGameStateGothicGuesser = {
   totalScore: 0,
   isCompleted: false,
   wrongMapIndices: [] as number[],
+  dotPositions: [] as DotPosition[],
+  playerMapPaths: [] as (string | null)[],
 };
 
 export default function GothicGuesserGameCard() {
@@ -80,8 +83,8 @@ export default function GothicGuesserGameCard() {
     setCurrentIndex((prev) => (prev === data.length - 1 ? prev : prev + 1));
   };
 
-  const handleGameComplete = (guesses: number[], totalScore: number, wrongMapIndices: number[]) => {
-    const newState = { ...defaultGameStateGothicGuesser, guesses, totalScore, isCompleted: true, wrongMapIndices };
+  const handleGameComplete = (guesses: number[], totalScore: number, wrongMapIndices: number[], dotPositions: DotPosition[], playerMapPaths: (string | null)[]) => {
+    const newState = { ...defaultGameStateGothicGuesser, guesses, totalScore, isCompleted: true, wrongMapIndices, dotPositions, playerMapPaths };
     setGameState(newState);
     localStorage.setItem('gameStateGothicGuesser', JSON.stringify(newState));
   };
@@ -89,7 +92,7 @@ export default function GothicGuesserGameCard() {
   return (
     <Card type='flex-col' size='lg'>
       {gameState.isCompleted ? (
-        <GothicguesserGameSummary guesses={gameState.guesses} totalScore={gameState.totalScore} date={isoDate} screenshots={data} wrongMapIndices={gameState.wrongMapIndices} />
+        <GothicguesserGameSummary guesses={gameState.guesses} totalScore={gameState.totalScore} date={isoDate} screenshots={data} wrongMapIndices={gameState.wrongMapIndices} dotPositions={gameState.dotPositions ?? []} playerMapPaths={gameState.playerMapPaths ?? []} />
       ) : (
         <>
           <ScreenshotSection
